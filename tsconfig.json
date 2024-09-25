@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "compilerOptions": {
+    // ... 다른 옵션들
+    "allowJs": true,
+    "esModuleInterop": true
+  },
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
