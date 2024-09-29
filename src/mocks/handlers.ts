@@ -1,11 +1,15 @@
 import { http, HttpResponse } from 'msw'
+import userData from './data/users.json'
 
 export const handlers = [
-  http.get('/api/users', () => {
-    return HttpResponse.json([
-      { id: 1, name: 'John Doe' },
-      { id: 2, name: 'Jane Doe' },
-    ])
+  http.get('/api/users/:id', ({ params }) => {
+    const { id } = params
+    const user = userData.users.find(u => u.id === Number(id))
+    
+    if (user) {
+      return HttpResponse.json(user)
+    } else {
+      return new HttpResponse(null, { status: 404 })
+    }
   }),
-  // 다른 핸들러들...
 ]
