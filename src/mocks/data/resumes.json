@@ -1,0 +1,104 @@
+{
+    "resumeList": [
+      {
+        "id": 1,
+        "title": "주니어 AI 엔지니어 이력서 #1",
+        "price": 49900,
+        "sales_quantity": 120,
+        "view_count": 1500,
+        "field": "AI",
+        "level": "BEGINNER",
+        "status": "SELLING",
+        "registered_at": "2023-07-15T09:23:45.123456"
+      },
+      {
+        "id": 2,
+        "title": "중급 프론트엔드 개발자 이력서 #1",
+        "price": 89000,
+        "sales_quantity": 85,
+        "view_count": 2200,
+        "field": "FRONTEND",
+        "level": "INTERMEDIATE",
+        "status": "SELLING",
+        "registered_at": "2024-02-28T14:57:32.987654"
+      },
+      {
+        "id": 3,
+        "title": "시니어 백엔드 개발자 이력서 #1",
+        "price": 79900,
+        "sales_quantity": 65,
+        "view_count": 980,
+        "field": "BACKEND",
+        "level": "ADVANCED",
+        "status": "SELLING",
+        "registered_at": "2023-11-07T11:45:30.246810"
+      },
+      {
+        "id": 4,
+        "title": "수석 AI 연구원 이력서 #1",
+        "price": 129000,
+        "sales_quantity": 40,
+        "view_count": 750,
+        "field": "AI",
+        "level": "SENIOR",
+        "status": "SELLING",
+        "registered_at": "2024-05-19T16:33:21.135790"
+      },
+      {
+        "id": 5,
+        "title": "중급 프론트엔드 개발자 이력서 #2",
+        "price": 69900,
+        "sales_quantity": 110,
+        "view_count": 3100,
+        "field": "FRONTEND",
+        "level": "INTERMEDIATE",
+        "status": "SELLING",
+        "registered_at": "2023-09-03T08:11:59.753951"
+      },
+      {
+        "id": 6,
+        "title": "시니어 백엔드 개발자 이력서 #2",
+        "price": 89900,
+        "sales_quantity": 75,
+        "view_count": 1800,
+        "field": "BACKEND",
+        "level": "ADVANCED",
+        "status": "SELLING",
+        "registered_at": "2024-01-22T13:40:15.951357"
+      },
+      {
+        "id": 7,
+        "title": "중급 AI 엔지니어 이력서 #1",
+        "price": 109000,
+        "sales_quantity": 55,
+        "view_count": 1200,
+        "field": "AI",
+        "level": "INTERMEDIATE",
+        "status": "SELLING",
+        "registered_at": "2023-08-11T10:05:33.789456"
+      },
+      {
+        "id": 8,
+        "title": "주니어 프론트엔드 개발자 이력서 #1",
+        "price": 59900,
+        "sales_quantity": 95,
+        "view_count": 2700,
+        "field": "FRONTEND",
+        "level": "BEGINNER",
+        "status": "SELLING",
+        "registered_at": "2024-03-17T17:28:49.159753"
+      },
+      {
+        "id": 9,
+        "title": "수석 백엔드 개발자 이력서 #1",
+        "price": 99000,
+        "sales_quantity": 60,
+        "view_count": 1400,
+        "field": "BACKEND",
+        "level": "SENIOR",
+        "status": "SELLING",
+        "registered_at": "2023-12-05T09:15:27.852147"
+      }
+      
+    ]
+  }

@@ -1,0 +1,66 @@
+{
+    "orderList": [
+        {
+            "order_id": 3,
+            "order_title": "JUNIOR BACKEND 이력서 #5",
+            "status": "ORDERED",
+            "total_amount": 165000
+          },
+          {
+            "order_id": 4,
+            "order_title": "SENIOR FRONTEND 이력서 #6",
+            "status": "PAYMENT_FAILED",
+            "total_amount": 5000
+          },
+          {
+            "order_id": 5,
+            "order_title": "NEW BACKEND 이력서 #4",
+            "status": "PARTIAL_CANCEL",
+            "total_amount": 0
+          },
+          {
+            "order_id": 6,
+            "order_title": "NEW AI 이력서 #8",
+            "status": "CANCEL",
+            "total_amount": 0
+          },
+          {
+            "order_id": 7,
+            "order_title": "JUNIOR BACKEND 이력서 #5",
+            "status": "CONFIRM",
+            "total_amount": 165000
+          },
+          {
+            "order_id": 8,
+            "order_title": "JUNIOR BACKEND 이력서 #5",
+            "status": "PARTIAL_CANCEL",
+            "total_amount": 165000
+          }
+    ],
+    "cartInfo": {
+      "total_quantity": 4,
+      "total_price": 235000,
+      "cart_resume_responses": [
+        {
+          "cart_resume_id": 9,
+          "title": "신입 백엔드 이력서 #4",
+          "price": 70000
+        },
+        {
+          "cart_resume_id": 10,
+          "title": "주니어 백엔드 이력서 #5",
+          "price": 70000
+        },
+        {
+          "cart_resume_id": 11,
+          "title": "시니어 프론트엔드 이력서 #6",
+          "price": 65000
+        },
+        {
+          "cart_resume_id": 12,
+          "title": "신입 백엔드 이력서 #7",
+          "price": 30000
+        }
+      ]
+    }
+}
