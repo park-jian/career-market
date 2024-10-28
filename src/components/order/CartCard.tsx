@@ -4,26 +4,30 @@ import { CartResumeItem } from '../../types/order';
 
 interface CartCardProps {
   item: CartResumeItem;
+  isSelected: boolean;
+  onSelect: (id: number) => void;
 }
   
-  const CartCard: React.FC<CartCardProps> = ({item}) => {
-  const {title, price} = item ;
+  const CartCard: React.FC<CartCardProps> = ({item, isSelected, onSelect}) => {
+  const {cart_resume_id, title, price} = item ;
   return (
-    <li className="flex border w-full text-center justify-center items-center">
-        <div className="border-r w-1/12 p-3">
-            <input type="checkbox" />
-        </div>
-        <div className="border-r w-3/12 p-3">
-            <div>이미지</div>
-        </div>
-        <div className="w-6/12">
-          <div>{title}</div>
-          <div>{price}</div>
-        </div>
-        <div className="w-2/12">
-            <button className="px-2 py-1 border-b-2 rounded-none font-semibold text-xl hover:bg-yellow-800 hover:text-yellow-200">삭제</button>
-        </div>
-    </li>    
+    <li className="flex items-center p-4 hover:bg-gray-50 transition-colors">
+      <div className="w-16 flex justify-center">
+        <input 
+          type="checkbox" 
+          className="w-4 h-4 rounded border-gray-300"
+          checked={isSelected}
+          onChange={() => onSelect(cart_resume_id)}
+        />
+      </div>
+      <div className="flex-1 px-4">
+        <h3 className="font-medium text-lg">{title}</h3>
+      </div>
+      <div className="w-32 text-right font-medium">
+        {price.toLocaleString()}원
+      </div>
+
+    </li>
   );
-}
+};
 export default CartCard;

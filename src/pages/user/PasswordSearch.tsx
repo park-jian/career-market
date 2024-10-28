@@ -67,7 +67,9 @@ export default function PasswordSearch() {
         } catch (error) {
             setResultMessage({ 
                 type: 'error', 
-                message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' 
+                message: error instanceof Error 
+                    ? `오류가 발생했습니다: ${error.message}` 
+                    : '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
             });
         }
     };

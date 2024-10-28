@@ -117,13 +117,13 @@ const List: React.FC = () => {
           {/* 가격 범위 */}
           <div className="flex gap-2 flex-1">
             <input 
-              placeholder="최소 가격" 
+              placeholder="최소가격" 
               value={minPrice} 
               onChange={(e) => setMinPrice(Number(e.target.value))} 
               className="w-full p-2 rounded-lg border text-sm"
             />
             <input 
-              placeholder="최대 가격" 
+              placeholder="최대가격" 
               value={maxPrice} 
               onChange={(e) => setMaxPrice(Number(e.target.value))} 
               className="w-full p-2 rounded-lg border text-sm"
