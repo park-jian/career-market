@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import CartCard from '../../components/order/CartCard';
 import { GrPrevious } from "react-icons/gr";
-import {getCartList, deleteCartItem, deleteCartAll} from "../../api/order";
+import { getCartList, deleteCartItem, deleteCartAll } from "../../api/order";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 export interface CartResumeItem {
   cart_resume_id: number;
   title: string;
@@ -15,34 +17,27 @@ export interface CartInfo {
   cart_resume_responses: CartResumeItem[];
 }
 const Cart: React.FC = () => {
-  const [cartData, setCartData] = useState<CartInfo>({
+  const { data: user } = useUser();
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const queryClient = useQueryClient();
+//카드에 담을때도 react query와 동기화 시켜야 함
+  // React Query로 장바구니 데이터 관리
+  const { 
+    data: cartResponse, 
+    isLoading, 
+    isError, 
+  } = useQuery({
+    queryKey: ['cart'],
+    queryFn: getCartList,
+    enabled: !!user
+  });
+
+  const cartData = cartResponse?.body || {
     total_quantity: 0,
     total_price: 0,
     cart_resume_responses: []
-  });
-
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { data: user } = useUser();
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);  // 선택된 아이템의 ID 배열
-  // 장바구니 데이터 조회 함수
-  const fetchCartData = async () => {
-    try {
-      const response = await getCartList();
-      console.log('장바구니 응답:', response); // 디버깅용
-  
-      if (response?.result?.result_code === 200) {
-        setCartData(response.body);  // response.data가 아닌 response.body 사용
-      } else {
-        setError(response?.result?.result_message || '장바구니 조회에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('장바구니 조회 실패:', error);
-      setError('장바구니 조회 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);  // 로딩 상태 해제를 finally에서 처리
-    }
   };
+
   const handleSelect = (cart_resume_id: number) => {
     setSelectedItems(prev => 
       prev.includes(cart_resume_id)
@@ -50,7 +45,7 @@ const Cart: React.FC = () => {
         : [...prev, cart_resume_id]
     );
   };
-  // 전체 선택 핸들러
+
   const handleSelectAll = () => {
     if (selectedItems.length === cartData.cart_resume_responses.length) {
       setSelectedItems([]);
@@ -58,47 +53,38 @@ const Cart: React.FC = () => {
       setSelectedItems(cartData.cart_resume_responses.map(item => item.cart_resume_id));
     }
   };
-  //선택 취소
+
   const handleCancelSelected = () => {
     if (selectedItems.length > 0) {
       setSelectedItems([]);
     }
-  }
+  };
 
   const handleDeleteSelected = async () => {
     try {
-      setLoading(true);
       const result = selectedItems.length === cartData.cart_resume_responses.length
         ? await deleteCartAll()
         : await deleteCartItem(selectedItems);
 
       if (result.result_code === 200) {
-        // 삭제 성공 후 장바구니 데이터 새로 조회
-        await fetchCartData();
+        // 캐시 무효화
+        await queryClient.invalidateQueries({ queryKey: ['cart'] });
         // 선택 상태 초기화
         setSelectedItems([]);
       }
     } catch (error) {
       console.error('삭제 실패:', error);
-    } finally {
-      setLoading(false);
     }
   };
-  useEffect(() => {
-    const loadCartData = async () => {
-      if (user) {
-        setLoading(true);  // 데이터 로딩 시작
-        await fetchCartData();
-      } else {
-        setLoading(false);  // 유저 정보가 없을 때도 로딩 상태 해제
-      }
-    };
-  
-    loadCartData();
-  }, [user]);
+
+  // 선택된 항목들의 총 가격 계산
   const selectedTotal = cartData.cart_resume_responses
-  .filter(item => selectedItems.includes(item.cart_resume_id))
-  .reduce((sum, item) => sum + item.price, 0);
+    .filter(item => selectedItems.includes(item.cart_resume_id))
+    .reduce((sum, item) => sum + item.price, 0);
+    // 선택된 상품들의 정보만 필터링
+  const selectedProducts = cartData.cart_resume_responses.filter(
+    item => selectedItems.includes(item.cart_resume_id)
+  );
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* 헤더 */}
@@ -112,13 +98,13 @@ const Cart: React.FC = () => {
         {/* 장바구니 리스트 */}
         <div className="lg:w-2/3 w-full">
           <div className="bg-white rounded-lg border shadow-sm">
-            {loading ? (
+          {isLoading ? (
               <div className="p-8 text-center">
                 <p className="text-gray-500">로딩중...</p>
               </div>
-            ) : error ? (
+            ) : isError ? (
               <div className="p-8 text-center">
-                <p className="text-red-500">{error}</p>
+                <p className="text-red-500">장바구니 조회 중 오류가 발생했습니다.</p>
               </div>
             ) : cartData.cart_resume_responses.length > 0 ? (
               <ul className="divide-y">
@@ -192,9 +178,16 @@ const Cart: React.FC = () => {
               </div>
             </div>
             <div className="p-6">
-              <button className="w-full py-4 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition-colors font-medium">
-                구매하기
-              </button>
+              <Link to="/transaction"
+              state={{ 
+                selectedProducts,
+                totalQuantity: selectedItems.length,
+                totalPrice: selectedTotal
+              }}>
+                <button className="w-full py-4 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition-colors font-medium">
+                  구매하기
+                </button>
+              </Link>
             </div>
           </div>
         </div>

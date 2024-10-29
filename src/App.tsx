@@ -29,6 +29,8 @@ import AdminResumeView from './pages/admin/AdminResumeView'; //관리자용 이�
 
 //장바구니
 import Cart from './pages/order/Cart'; //장바구니
+//결제
+import Transaction from './pages/order/Transaction';
 
 import Header from './components/Header'
 
@@ -84,7 +86,8 @@ const App: React.FC = () => {
           <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} />
 
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-
+          <Route path="/transaction" element={<PrivateRoute><Transaction /></PrivateRoute>} />
+          
           {/* NotFound route */}
           <Route path="*" element={<NotFound />} />
         </Route>
