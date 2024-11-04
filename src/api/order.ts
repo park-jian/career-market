@@ -1,4 +1,4 @@
-import {OrderInfo, CartInfo} from '../types/order'
+import {OrderInfo, CartInfo, OrderOneInfo} from '../types/order'
 interface VerifyCodeResponse {
   result_code: number;
   result_message: string;
@@ -22,7 +22,7 @@ export const getOrderList = async () => {
     }
   };
   
-  export const getOrderListView = async (orderId: number): Promise<OrderInfo> => {
+  export const getOrderListView = async (orderId: number): Promise<ApiResponse<OrderOneInfo>> => {
     try {
       const response = await api.get(`/api/v1/orders/${orderId}`);
       return response.data;
@@ -96,6 +96,36 @@ export const deleteCartItem = async (cartIds: number[]): Promise<VerifyCodeRespo
 export const deleteCartAll = async (): Promise<VerifyCodeResponse> => {
   try {
     const response = await api.delete(`/api/v1/cart-resumes`);
+    const result = response.data.result;
+    return {
+      result_code: result.result_code,
+      result_message: result.result_message
+    }
+  } catch (error) {
+    console.error('Error adding new order:', error);
+    throw error;
+  }
+};
+
+export const cancelOrderResume = async (orderId: number, orderResumeIds: number[]): Promise<VerifyCodeResponse> => {
+  try {
+    const response = await api.post(`/api/v1/checkout/partial-cancel/${orderId}`,
+      { order_resume_ids: orderResumeIds }  // request body 추가
+    );
+    const result = response.data.result;
+    return {
+      result_code: result.result_code,
+      result_message: result.result_message
+    }
+  } catch (error) {
+    console.error('Error adding new order:', error);
+    throw error;
+  }
+};
+
+export const cancelOrderResumeAll = async (orderId: number): Promise<VerifyCodeResponse> => {
+  try {
+    const response = await api.post(`/api/v1/checkout/cancel/${orderId}`);
     const result = response.data.result;
     return {
       result_code: result.result_code,

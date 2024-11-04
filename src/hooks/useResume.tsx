@@ -3,6 +3,30 @@ import {getList, addNewResume, getListOne } from "../api/resume"
 import { ResumeInfo } from "../types/resume";
 import { useEffect } from 'react';
 
+
+
+
+
+
+
+
+//지금은 사용을 하지 않음
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // export function useResume(id: number | undefined) {
 //   const query = useQuery<ResumeInfo, Error>({
 //     queryKey: ["resume", id],
@@ -12,7 +36,7 @@ import { useEffect } from 'react';
 //   });
 
 //   useEffect(() => {
-//     debugger;
+//     //debugger;
 //     if (query.isSuccess) {
 //       console.log(`Resume with id ${id} fetched:`, query.data);
 //     }

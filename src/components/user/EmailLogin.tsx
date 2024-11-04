@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validation"
 import { FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-//import { useAuth } from '../../auth/AuthContext';
 import {useLogin} from '../../hooks/useUser';
 export default function EmailLogin() {
   //const [email, setEmail] = useState("");
@@ -49,10 +48,10 @@ export default function EmailLogin() {
         email: userInfo.email,
         password: userInfo.password
       });
-      // 회원가입 성공 시 페이지 이동
+      // 로그인 성공 시 페이지 이동
       navigate('/');
     } catch (error) {
-      console.error("회원가입 실패:", error);
+      console.error("로그인 실패:", error);
       setUserInfo({ email: "", password: "" });
       setEmailError(false);
       setPasswordError(false);
@@ -73,6 +72,7 @@ export default function EmailLogin() {
           required
           className="w-3/5 h-9 border rounded-md"
           placeholder="Email Address*"
+          autoComplete="off"
         ></input>
         <div className="h-7">
           {emailError && (
@@ -88,7 +88,7 @@ export default function EmailLogin() {
           required
           className="w-3/5 h-9 border rounded-md"
           placeholder="영문 대 또는 소문자, 숫자, 특수기호 포함 총 8자 이상"
-          autoComplete="on"
+          autoComplete="off"
         ></input>
         <div className="h-7">
           {passwordError && (

@@ -1,11 +1,11 @@
 //import axios from 'axios';
-// import { useAuth } from '../auth/AuthContext';
+// import { useAuth } from '../Context';
 import axios from 'axios';
 import api from './axiosConfig';
 export interface bodyType {
   email: string,
   name: string,
-  role_type: string
+  status: string
 }
 export interface resultType {
   result_code: number,
@@ -37,19 +37,15 @@ interface ApiResponse {
   body?: string;
 }
 export const fetchUser = async (): Promise<User> => {
-  // const { accessToken } = useAuth(); // useAuth 훅을 사용하여 accessToken을 가져옵니다
-
-  // if (!accessToken) {
-  //   throw new Error('No access token available');
-  // }
-  // const response = await axios.get(`http://13.209.85.115:8080/api/v1/users/me`, {
-  //   headers: {
-  //     Authorization: `Bearer ${accessToken}`
-  //   }
-  // });
-  const response = await api.get('/api/v1/users/me');
-  const data = response.data;
-  return data;
+  try {
+    const response = await api.get('/api/v1/users/me');
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      console.log("error:",error);
+    };
+    throw new Error('알 수 없는 에러가 발생했습니다.');
+  }
 };
 
 export const verifyCode = async (email: string, code: string): Promise<VerifyCodeResponse> => {
