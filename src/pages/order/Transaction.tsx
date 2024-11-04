@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {useUser} from '../../hooks/useUser';
+// 모듈 임포트 연동방식
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk"
+
 export interface CartResumeItem {
   cart_resume_id: number;
   title: string;
@@ -33,8 +36,44 @@ const Transaction = () => {
   if (!user) {
     return <div>로그인이 필요한 서비스입니다</div>;
   }
-  const handleTransaction = () => {
-    console.log("토스 위젯 오픈")
+  const handleTransaction = async () => {
+    console.log("토스 위젯 오픈");
+    //결제 창 초기화
+    const tossPayments = await loadTossPayments("test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq");
+    const payment = tossPayments.payment({ customerKey: "20241030@" });
+
+    // 첫 번째 상품명 가져오기
+    const firstProductTitle = selectedProducts[0]?.title || "상품";
+    const remainingItems = totalQuantity > 1 ? ` 외 ${totalQuantity - 1}건` : "";
+    // (Clock.systemUTC().millis() / 5000) + "#" + userId + "-" + uuidHolder.random()
+    // // (uuid 5글자로 통일)
+    try {
+    // 현재 시간 (millis) / 5000 + "#" + userId + "-" + uuid 5자리
+      payment.requestPayment({
+        method: "CARD",
+        amount: {
+          currency: "KRW",
+          value: totalPrice,
+        },
+        orderId: "OJls69lE9SS3baVBUIHQ8",
+        orderName: `${firstProductTitle}${remainingItems}`,
+        customerEmail: `${user.email}`,
+        customerName: `${user.name}`,
+        // windowTarget: "iframe",
+        card: {
+          useEscrow: false,
+          flowMode: "DEFAULT",
+          useCardPoint: false,
+          useAppCardOnly: false,
+        },
+        successUrl: `${import.meta.env.VITE_BASE_URL}/success`,
+        failUrl: `${import.meta.env.VITE_BASE_URL}/fail`,
+        // successUrl: window.location.origin + "/success", // 결제 요청이 성공하면 리다이렉트되는 URL
+        //   failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
   return (
     <div className="max-w-2xl mx-auto p-4">

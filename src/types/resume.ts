@@ -31,3 +31,23 @@ export interface ResumeRequestOneInfo {//관리자 단건 조회
     description_image_url: string;
     status: string;
   }
+  export interface PendingResumeOneType {//요청중인 이력서 단건
+    field: string;
+    level: string;
+    resume_url: string;
+    description_image_url: string;
+    price: number;
+    sales_quantity: number;
+    description: string;
+    status: string;
+  }
+  
+export interface PendingResumeType {//요청중인 이력서 전체
+    resume_id: number;
+    summary: string;
+    sales_quantity: number;
+    field: string;
+    level: string;
+    status: string;
+    modified_at: string;
+  }

@@ -18,42 +18,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const checkAuthStatus = useCallback(async () => {
+  const checkAuthStatus = async () => {
     try {
-      if (!getAuthToken()) {
-        return;
-      }
-      console.log("getAuthToken():",getAuthToken())
       const response = await api.post('/api/v1/token/reissue', null, {
         withCredentials: true,
       });
+      console.log("reissue:", response)
       setIsAuthenticated(true);
       setUserId(response.data.userId);
       setAuthToken(response.data.accessToken);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        // 401 오류는 로그인 전 상태에서 정상적인 상황으로 처리
-        console.log('Not authenticated. This is normal before login.');
+        setIsAuthenticated(false);
+        setUserId(null);
+        setAuthToken(null);
       } else {
         console.error('Failed to check auth status:', error);
       }
-      setIsAuthenticated(false);
-      setUserId(null);
-      setAuthToken(null);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+   };
 
   useEffect(() => {
+    console.log("useEffect triggered");  // 추가
     checkAuthStatus();
-  }, [checkAuthStatus]);
+  }, []);
 
   const login = async (email: string, password: string): Promise<number> => {
     try {
       const response = await api.post('/open-api/v1/users/login', { email, password }, {
         withCredentials: true,
       });
+      //debugger;
       const { result_code, result_message } = response.data.result;
       const { user_id, access_token } = response.data.body;
       
@@ -93,39 +90,129 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       navigate('/users/login');
     }
   };
-
   useEffect(() => {
-    const interceptor = api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        if (error.response?.status === 401 && error.config && !error.config.__isRetryRequest) {
-          try {
+    let isRefreshing = false;
+    let refreshSubscribers: ((token: string) => void)[] = [];
+
+    const onRefreshed = (token: string) => {
+      refreshSubscribers.forEach(callback => callback(token));
+      refreshSubscribers = [];
+    };
+
+    const subscribeTokenRefresh = (cb: (token: string) => void) => {
+      refreshSubscribers.push(cb);
+    };
+    // axios 요청 인터셉터 추가
+    const requestInterceptor = api.interceptors.request.use(
+      (config) => {
+        const token = getAuthToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        // 모든 요청에 credentials 포함
+        config.withCredentials = true;
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // axios 응답 인터셉터 추가
+    const responseInterceptor = api.interceptors.response.use(
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+
+        // 토큰 재발급 요청 자체가 실패한 경우
+        if (originalRequest.url?.includes('/api/v1/token/reissue')) {
+          setIsAuthenticated(false);
+          setUserId(null);
+          setAuthToken(null);
+          if (window.location.pathname !== '/users/login') {
+            navigate('/users/login');
+          }
+          return Promise.reject(error);
+        }
+
+        // 401 에러이고 재시도하지 않은 요청인 경우
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          if (isRefreshing) {
+            // 토큰 재발급 중인 경우, 대기열에 추가
+            return new Promise(resolve => {
+              subscribeTokenRefresh(token => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                resolve(api(originalRequest));
+              });
+            });
+          }
+
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {//debugger;
             const response = await api.post('/api/v1/token/reissue', null, {
               withCredentials: true,
             });
-            setAuthToken(response.data.accessToken);
-            error.config.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
-            error.config.__isRetryRequest = true;
-            return api(error.config);
+
+            const newToken = response.data.accessToken;
+            setAuthToken(newToken);
+            onRefreshed(newToken);
+            
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            isRefreshing = false;
+            return api(originalRequest);
           } catch (refreshError) {
+            isRefreshing = false;
             setIsAuthenticated(false);
             setUserId(null);
             setAuthToken(null);
-            // 로그인 페이지가 아닐 때만 리다이렉트
             if (window.location.pathname !== '/users/login') {
               navigate('/users/login');
             }
             return Promise.reject(refreshError);
           }
         }
+
         return Promise.reject(error);
       }
     );
 
+    // 컴포넌트 언마운트 시 인터셉터 제거
     return () => {
-      api.interceptors.response.eject(interceptor);
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
   }, [navigate]);
+  // useEffect(() => {
+  //   const interceptor = api.interceptors.request.use(
+  //     (response) => response,
+  //     async (error) => {
+  //       if (error.response?.status === 401) {
+  //         try {
+  //           const response = await api.post('/api/v1/token/reissue', null, {
+  //             withCredentials: true,
+  //           });
+  //           setAuthToken(response.data.accessToken);
+  //           error.config.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
+  //           return api(error.config);
+  //         } catch (refreshError) {
+  //           setIsAuthenticated(false);
+  //           setUserId(null);
+  //           setAuthToken(null);
+  //           // 로그인 페이지가 아닐 때만 리다이렉트
+  //           if (window.location.pathname !== '/users/login') {
+  //             navigate('/users/login');
+  //           }
+  //           return Promise.reject(refreshError);
+  //         }
+  //       }
+  //       return Promise.reject(error);
+  //     }
+  //   );
+
+  //   return () => {
+  //     api.interceptors.response.eject(interceptor);
+  //   };
+  // }, [navigate]);
 
   if (isLoading) {
     return <div>Loading...</div>; // 또는 로딩 스피너 컴포넌트

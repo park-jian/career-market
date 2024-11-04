@@ -135,7 +135,6 @@ function Register() {
   
   //인증번호 유효성 체크
   const handleAuthNumberCheck = async () => {
-    if (authNumberResultObj === null) {
       try {
         const resultObj = await verifyCode(userInfo.email, authNumber);
         console.log("handleAuthNumberCheck:",resultObj );
@@ -150,7 +149,6 @@ function Register() {
         console.error("인증번호 확인 실패:", error);
         setAuthError(true);
       }
-    }
   };
   //회원 가입 버튼
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -158,7 +156,7 @@ function Register() {
     console.log("submit_userInfo:", userInfo, emailError, passwordError, confirmPasswordError, authError);
     
     if (emailError !== true && passwordError !== true && confirmPasswordError !== true && authError !== true) {
-      // const resultObj = await fetchSignup(userInfo);debugger;
+      // const resultObj = await fetchSignup(userInfo);//debugger;
       // try {
       //   console.log("회원가입성공:", resultObj);
       // } catch (err) {

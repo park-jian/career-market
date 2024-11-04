@@ -4,13 +4,13 @@
       "id": 1,
       "name": "차건호",
       "email": "john@example.com",
-      "role_type": "USER"
+      "status": "USER"
     },
     {
       "id": 2,
       "name": "김은영",
       "email": "jane@example.com",
-      "role_type": "ADMIN"
+      "status": "ADMIN"
     }
   ]
 }

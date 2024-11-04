@@ -3,14 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchUser, modifyPassword } from '../../api/user';
 import { IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { validatePassword, validateConfirmPassword } from '../../utils/validation';
-// import { useAuth } from '../../auth/AuthContext';
 import { useUser } from '../../hooks/useUser';
 
 // User 인터페이스 정의 추가
 interface User {
   email: string;
   name: string;
-  role_type: string;
+  status: string;
 }
 
 interface PasswordState {
@@ -96,7 +95,7 @@ const Profile: React.FC = () => {
           } else {
             alert(`비밀번호 수정 성공`);
           }
-          navigate(0);
+          navigate('/');
         }
       } catch (err) {
         console.log("err:", err);

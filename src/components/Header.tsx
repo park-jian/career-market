@@ -35,8 +35,8 @@ const Header: React.FC = () => {
         return (
           <div className="flex justify-center space-x-8">
             <Link to="/resumes/register" className="hover:underline hover:text-red-500">이력서 등록</Link>
-            <Link to="/resumes/sale-resumes" className="hover:underline hover:text-red-500">판매중인 이력서</Link>
             <Link to="/resumes/pending" className="hover:underline hover:text-red-500">요청중인 이력서</Link>
+            <Link to="/resumes/sale-resumes" className="hover:underline hover:text-red-500">판매중인 이력서</Link>
             <Link to="/resumes/list" className="hover:underline hover:text-red-500">판매글</Link>
           </div>
         );

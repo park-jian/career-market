@@ -2,6 +2,7 @@
 import {ResumeInfo} from '../types/resume'
 import api from '../api/axiosConfig';
 import axios from 'axios';
+import {PendingResumeType, PendingResumeOneType} from '../types/resume';
 // interface resumeDataType {
 //   field: string;
 //   level: string;
@@ -20,36 +21,43 @@ interface ApiResponse {
   };
   body?: string;
 }
-interface Resume {
-  id: number;
-  title: string;
-  sales_quantity: string;
-  status: string;
-  registered_at: string;
+interface UpdateResumeData {
+  field: 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+  level: 'NEW' | 'JUNIOR' | 'SENIOR';
+  resume_url: string;
+  price: number;
+  description: string;
 }
-interface ResumeType2 {
-  id: number;  // salesPostId를 위한 id 추가
-  summary: string;
-  sales_quantity: number;
-  field: string;
-  level: string;
-  status: string;
-  modified_at: string;
-}
+// interface Resume {
+//   id: number;
+//   title: string;
+//   sales_quantity: string;
+//   status: string;
+//   registered_at: string;
+// }
+// interface ResumeType2 {
+//   id: number;  // salesPostId를 위한 id 추가
+//   summary: string;
+//   sales_quantity: number;
+//   field: string;
+//   level: string;
+//   status: string;
+//   modified_at: string;
+// }
 
 interface ApiResponse2 {
   result: {
     result_code: number;
     result_message: string;
   };
-  body: Resume[];
+  body: PendingResumeOneType;
 }
 interface ApiResponse3 {
   result: {
     result_code: number;
     result_message: string;
   };
-  body: ResumeType2[];
+  body: PendingResumeType[];
 }
 //모든 사용자 판매글 페이지 조회
 export const getList = async (params?: {
@@ -75,7 +83,7 @@ export const getList = async (params?: {
       }});
     return response.data;
   } catch (error) {
-    console.error('Error adding new resume:', error);
+    console.error('Error adding new resume:', error);//이거 없애면 왜 에러나?
     throw error;
   }
 };
@@ -106,7 +114,7 @@ export const addNewResume = async (resume: Omit<ResumeInfo, 'id'>): Promise<Resu
 //나의 판매중인 판매글 조회
 export const getMyList = async () => {
   try {
-    const response = await api.get<ApiResponse2>(`api/v1/sales-posts`);
+    const response = await api.get<ApiResponse2>(`api/v1/sales-posts`);//debugger;
     const result = response.data.result;
     const data = response.data.body;
     return {
@@ -114,7 +122,7 @@ export const getMyList = async () => {
       result_message: result.result_message,
       data: data
     }
-  } catch (error) {
+  } catch (error) {//debugger;
     console.error('Error adding new resume:', error);
     throw error;
   }
@@ -146,6 +154,48 @@ export const getMyPendingListOne = async (resumeId: number) => {
     throw error;
   }
 };
+export const deleteResume = async (resumeId: number) => {
+  try {
+    const response = await api.delete<ApiResponse2>(`/api/v1/resumes/${resumeId}`);
+    const result = response.data;
+    return result;
+  } catch (error) {
+    console.error('Error adding new resume:', error);
+    throw error;
+  }
+}
+export const updateResume = async (resumeId: number, resumeData: UpdateResumeData, descriptionImage: File | string | undefined) => {
+  try {
+    // const response = await api.put<ApiResponse2>(`/api/v1/resumes/${resumeId}`);
+    // const result = response.data;
+    // return result;
+    // FormData 생성
+    const formData = new FormData();
+    
+    // JSON 데이터를 문자열로 변환하여 추가
+    formData.append('resumeData', JSON.stringify(resumeData));
+    
+    // 이미지 파일 추가
+    if (descriptionImage) {
+      formData.append('descriptionImage', descriptionImage);
+    }
+
+    const response = await api.put<ApiResponse2>(
+      `/api/v1/resumes/${resumeId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error adding new resume:', error);
+    throw error;
+  }
+}
 export const getAdminResumeList = async () => {//관리자 요청 이력서 조회
   try {
     const response = await api.get(`/admin-api/v1/resumes`,{

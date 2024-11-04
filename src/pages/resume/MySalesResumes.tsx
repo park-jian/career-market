@@ -23,10 +23,11 @@ const MySalesResumes: React.FC = () => {
           setLoading(false);
           return;
         }
+        setError(null);
         const response = await getMyList();
         console.log("response:",response)
         //setResumeData(data);
-        if (response?.result_code === 200) {
+        if (response?.result_code === 200) {//debugger;
           setResumeData(response.data || []);
 
         } else {
@@ -36,9 +37,14 @@ const MySalesResumes: React.FC = () => {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.result?.result_message || '데이터를 가져오는데 실패했습니다.');
           console.error('Error response:', err.response?.data);
+        } else if (typeof err === 'object' && err !== null && 'status' in err && 'code' in err) {
+          //debugger;
+          const error = err as { status?: number; code?: number; message?: string }; // 타입 단언
+          if (error.status === 404 && error.code === 5404) {
+            setError(error.message || '데이터를 가져오는데 실패했습니다.');
+          }
         } else {
-          setError('알 수 없는 에러가 발생했습니다.');
-          console.error('Unexpected error:', err);
+          setError('알 수 없는 오류가 발생했습니다.');
         }
       } finally {
         setLoading(false);

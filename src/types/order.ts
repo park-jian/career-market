@@ -1,8 +1,24 @@
+export interface OrderInfoOne {
+  order_resume_id: number;
+  title: string;
+  status: string;
+  price: number;
+  sent_at: string | null;
+  canceled_at: string | null;
+}
+
 export interface OrderInfo {
   order_id: number;
-  order_title: string;
+  paid_at: string;
+  email: string;
+  order_resume_responses: OrderInfoOne[];
+}
+export interface OrderOneInfo {
+  order_id: number;
+  paid_at: string;
+  email: string;
+  order_resume_responses: OrderInfoOne[];
   total_amount: number;
-  status: string;
 }
 export interface OrderCardProps {
   order: OrderInfo;

@@ -1,8 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import { Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
 import NotFound from './pages/NotFound';
-// import {AuthProvider, useAuth } from './auth/AuthContext';
-import {useUser} from './hooks/useUser';
+import {useUser, useCheckAndRefreshToken } from './hooks/useUser';
 //메인페이지
 import Home from './pages/Home';
 
@@ -10,18 +9,19 @@ import Home from './pages/Home';
 import UserRegister from './pages/user/Register'; //회원등록
 import UserLogin from './pages/user/Login'; //로그인
 import UserProfile from './pages/user/Profile'; //나의 정보 조회
-import PasswordSearch from './pages/user/PasswordSearch'; //나의 정보 조회
+import PasswordSearch from './pages/user/PasswordSearch'; //비밀번호 찾기
 import Secession from './pages/user/Secession'; //탈퇴
 
 //이력서
 import ResumeRegister from './pages/resume/Register';  //이력서 등록
 import ResumeEdit from './pages/resume/Edit';  //이력서 수정
 import ResumeList from './pages/resume/List';  //이력서 조회
-import SalesResumeList from './pages/resume/SalesResumeList'; //이력서 판매글 조회 (비로그인 포함)
+import PendingResumeList from './pages/resume/PendingResumeList'; //판매 요청중인 이력서 조회
+import PendingResumeView from './pages/resume/PendingResumeView'; //판매 요청중인 이력서 단건 조회
 import SalesResumeView from './pages/resume/SalesResumeView'; //판매글 단건 상세 조회
 import MySalesResumes from './pages/resume/MySalesResumes'; //자신이 판매중인 판매글 내역 조회
 import OrderList from './pages/order/OrderList'; //주문내역 전체 조회
-import OrderDetail from './pages/order/OrderDetail'; //주문내역 상세조회
+import OrderView from './pages/order/OrderView'; //주문내역 상세조회
 
 //관리자
 import AdminResumeList from './pages/admin/AdminResumeList'; //  관리자용 이력서 list 전체 조회
@@ -31,6 +31,8 @@ import AdminResumeView from './pages/admin/AdminResumeView'; //관리자용 이�
 import Cart from './pages/order/Cart'; //장바구니
 //결제
 import Transaction from './pages/order/Transaction';
+import PaymentSuccess from './pages/order/PaymentSuccess';
+import PaymentFail from './pages/order/PaymentFail';
 
 import Header from './components/Header'
 
@@ -56,9 +58,18 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return <>{children}</>;
 };
 const App: React.FC = () => {
+  // const { data: auth, isLoading } = useAuth();
+  const { checkAndRefreshToken } = useCheckAndRefreshToken();
+
+  // 컴포넌트 마운트 시 토큰 재발급 시도
+  useEffect(() => {
+    const refreshToken = async () => {
+      await checkAndRefreshToken();
+    };
+    refreshToken();
+  }, [checkAndRefreshToken]);
+
   return (
-    <Router>
-      
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -75,25 +86,25 @@ const App: React.FC = () => {
           <Route path="/resumes/list" element={<ResumeList />} />
           <Route path="/resumes/:salesPostId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} />
 
-          <Route path="/resumes/pending" element={<PrivateRoute><SalesResumeList /></PrivateRoute>} />
-          <Route path="/resumes/pending/:salesPostId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} />
+          <Route path="/resumes/pending" element={<PrivateRoute><PendingResumeList /></PrivateRoute>} />
+          <Route path="/resumes/pending/:resumeId" element={<PrivateRoute><PendingResumeView /></PrivateRoute>} />
           <Route path="/resumes/register" element={<ResumeRegister />} />
           <Route path="/resumes/:id" element={<PrivateRoute><ResumeEdit /></PrivateRoute>} />
           <Route path="/resumes/sale-resumes/" element={<PrivateRoute><MySalesResumes /></PrivateRoute>} />
           <Route path="/orders" element={<PrivateRoute><OrderList /></PrivateRoute>} />
-          <Route path="/orders/:salesPostId" element={<PrivateRoute><OrderDetail /></PrivateRoute>} />
+          <Route path="/orders/:orderId" element={<PrivateRoute><OrderView /></PrivateRoute>} />
           <Route path="/resumes/admin" element={<PrivateRoute><AdminResumeList /></PrivateRoute>} />
           <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} />
 
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/transaction" element={<PrivateRoute><Transaction /></PrivateRoute>} />
+          <Route path="/success" element={<PrivateRoute><PaymentSuccess /></PrivateRoute>} />
+          <Route path="/fail" element={<PrivateRoute><PaymentFail /></PrivateRoute>} />
           
           {/* NotFound route */}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </Router>
-    
   );
 };
 const Layout: React.FC = () => {

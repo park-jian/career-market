@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import {addCart} from '../../api/order';
 interface ResumeState {
   resume: {
@@ -22,6 +21,7 @@ const SalesResumeListOne: React.FC = () => {
   const location = useLocation();
   const [alertVisible, setAlertVisible] = useState(false);
   const resumeData = (location.state as ResumeState)?.resume;
+  //debugger;
   const handleCart = async () => {
     const response = await addCart(resumeData.resume_id);
     if (response?.result_code === 201) {
