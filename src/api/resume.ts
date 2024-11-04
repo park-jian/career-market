@@ -59,6 +59,22 @@ interface ApiResponse3 {
   };
   body: PendingResumeType[];
 }
+export type SortType = 'OLD' | 'NEW' | 'HIGHEST_PRICE' | 'LOWEST_PRICE' | 'VIEW_COUNT' | 'BEST_SELLING';
+export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
+export type PageStep = 'FIRST' | 'NEXT' | 'PREVIOUS' | 'LAST';
+// request parameter interface 정의
+interface GetMyListParams {
+  sortType?: SortType;
+  minPrice?: number;
+  maxPrice?: number;
+  field?: FieldCond;
+  level?: LevelCond;
+  pageStep: PageStep;
+  limit?: number;
+  lastId?: number;
+}
+
 //모든 사용자 판매글 페이지 조회
 export const getList = async (params?: {
   sortType?: string;
@@ -112,9 +128,20 @@ export const addNewResume = async (resume: Omit<ResumeInfo, 'id'>): Promise<Resu
   }
 };
 //나의 판매중인 판매글 조회
-export const getMyList = async () => {
+export const getMyList = async (params: GetMyListParams) => {
   try {
-    const response = await api.get<ApiResponse2>(`api/v1/sales-posts`);//debugger;
+    const response = await api.get<ApiResponse2>(`api/v1/sales-posts`, {
+      params: {
+        sortType: params.sortType,
+        minPrice: params.minPrice,
+        maxPrice: params.maxPrice,
+        field: params.field,
+        level: params.level,
+        pageStep: params.pageStep || 'FIRST',
+        limit: params.limit || 6,
+        lastId: params.lastId
+      }
+    });
     const result = response.data.result;
     const data = response.data.body;
     return {
