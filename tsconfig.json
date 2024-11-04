@@ -1,7 +1,8 @@
 {
   "files": [],
   "compilerOptions": {
-    // ... 다른 옵션들
+    "noUnusedLocals": false,        // 사용하지 않는 로컬 변수 허용
+    "noUnusedParameters": false,     // 사용하지 않는 파라미터 허용
     "allowJs": true,
     "esModuleInterop": true
   },
