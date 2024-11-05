@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FiAlignJustify } from "react-icons/fi";
 import { GoPerson  } from "react-icons/go";
 import { IoIosHome } from "react-icons/io";
-import Swiper from "./Swiper";
 import Navbar from './Navbar'
 import CartIcon from '../components/order/CartIcon';
 
@@ -62,7 +61,7 @@ const Header: React.FC = () => {
       
     >
       <div className="absolute inset-0 z-0">
-        <Swiper />
+        <img src='https://images.unsplash.com/photo-1529400971008-f566de0e6dfc' className="w-full h-full object-cover" />
       </div>
       <div className={`relative z-10 flex flex-col w-full h-full transition-colors duration-300 `}>
         <Navbar isHovered={isHovered} setIsHovered={setIsHovered}/>

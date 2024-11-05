@@ -21,7 +21,7 @@ const SalesResumeListOne: React.FC = () => {
   const location = useLocation();
   const [alertVisible, setAlertVisible] = useState(false);
   const resumeData = (location.state as ResumeState)?.resume;
-  //debugger;
+
   const handleCart = async () => {
     const response = await addCart(resumeData.resume_id);
     if (response?.result_code === 201) {

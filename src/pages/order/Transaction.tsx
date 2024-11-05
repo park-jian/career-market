@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {useUser} from '../../hooks/useUser';
 // 모듈 임포트 연동방식

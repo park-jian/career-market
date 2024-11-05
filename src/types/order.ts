@@ -33,3 +33,10 @@ export interface CartInfo {
   total_price: number,
   cart_resume_responses: CartResumeItem[]
 }
+
+export interface OrderType {
+  order_id: number;
+  order_title: string;
+  status: string;
+  total_amount: number;
+}

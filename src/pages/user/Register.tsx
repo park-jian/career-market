@@ -156,7 +156,7 @@ function Register() {
     console.log("submit_userInfo:", userInfo, emailError, passwordError, confirmPasswordError, authError);
     
     if (emailError !== true && passwordError !== true && confirmPasswordError !== true && authError !== true) {
-      // const resultObj = await fetchSignup(userInfo);//debugger;
+      // const resultObj = await fetchSignup(userInfo);
       // try {
       //   console.log("회원가입성공:", resultObj);
       // } catch (err) {

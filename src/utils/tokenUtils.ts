@@ -8,7 +8,7 @@ import api from '../api/axiosConfig';
 // } as const;
 
 export const tokenUtils = {
-  setTokens: (accessToken: string, refreshToken?: string) => {//////debugger;
+  setTokens: (accessToken: string, refreshToken?: string) => {
     // Cookies.set('access_token', accessToken, { 
     //   path: '/', 
     //   expires: new Date(new Date().getTime() + TOKEN_CONFIG.ACCESS_TOKEN_EXPIRY)

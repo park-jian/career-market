@@ -3,17 +3,8 @@ import ResumeCard from '../../components/resume/ResumeCard';
 import { MdOutlineFilterList } from "react-icons/md";
 // import useResumes from '../../hooks/useResume';
 import {getList} from '../../api/resume';
-import { ResumeInfo } from '../../types/resume';
+import { ResumeInfo, ListParams } from '../../types/resume';
 import Pagination from '../../components/Pagination'
-interface ListParams {
-  sortType?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  field?: string;
-  level?: string;
-  pageStep: string;
-  lastId?: number;
-}
 const List: React.FC = () => {
   // const { resumesQuery: { isLoading, error, data: resumes }, } = useResumes();
   const [resumes, setResumes] = useState<ResumeInfo[]>([]);
@@ -23,9 +14,11 @@ const List: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState<number | undefined>();//최대가격
   const [field, setField] = useState<string | undefined>();//분야
   const [level, setLevel] = useState<string | undefined>();//년차
+  const [error, setError] = useState<string | null>(null);
   //const [pageStep, setPageStep] = useState<string>('FIRST');
   const handlePageChange = async (newPage: number, pageStep: string) => {
     try {
+      console.log("페이지이동:", newPage);
       const params: ListParams = {
         pageStep: pageStep,
         // 기존 필터 조건들 유지
@@ -61,8 +54,17 @@ const List: React.FC = () => {
           const resumeList = data.body.results;
           setResumes(resumeList);
         }
-      }catch (err) {
-        console.log('Failed to fetch resumes.:', err);
+      } catch (err) {
+        if (err instanceof Error) {  // Error 타입인지 체크
+          setError(err.message);
+        } else if (typeof err === 'object' && err !== null && 'code' in err) {  // code 속성이 있는 객체인지 체크
+          const error = err as { code: number; message: string };
+          if (error.code === 5404) {
+            setError(error.message);
+          }
+        } else {
+          setError('알 수 없는 에러가 발생했습니다.');
+        }
       }
     };
 
@@ -91,7 +93,13 @@ const List: React.FC = () => {
       console.error('Failed to fetch sorted resumes:', err);
     }
   }
-
+  if (error) {
+    return (
+      <div className="text-center mt-20">
+        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg shadow inline-block">{error}</div>
+      </div>
+    );
+  }
   return (
     <div className='w-full py-6'>
       <div className='w-full max-w-[1280px] mx-auto px-4'>

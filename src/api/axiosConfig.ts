@@ -37,7 +37,7 @@ api.interceptors.request.use(
 // Response 인터셉터
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {//debugger;
+  async (error) => {
     const originalRequest = error.config;
 
     // 토큰 재발급 요청 자체가 실패한 경우
@@ -48,7 +48,7 @@ api.interceptors.response.use(
     }
 
     // 401 에러이고 재시도하지 않은 요청인 경우
-    if (error.response?.status === 401 && !originalRequest._retry) {//debugger;
+    if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // 토큰 재발급 중인 경우, 대기열에 추가
         return new Promise(resolve => {
@@ -63,7 +63,6 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {//access token 재발급
-        //debugger;
         //console.log("refresh_token:", Cookies.get('refreshToken'));
         // refresh token을 sessionStorage에서 가져오기
         const refreshToken = tokenUtils.getRefreshToken();
@@ -92,7 +91,6 @@ api.interceptors.response.use(
         // 원래 요청 재시도
         return api(originalRequest);
       } catch (refreshError) {
-        //debugger;
         isRefreshing = false;
         tokenUtils.clearTokens();
         if (window.location.pathname !== '/users/login') {

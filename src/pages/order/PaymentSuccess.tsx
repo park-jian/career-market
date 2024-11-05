@@ -1,4 +1,4 @@
-import React, { useEffect }  from 'react';
+import { useEffect }  from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 export default function PaymentSuccess() {
@@ -9,7 +9,6 @@ export default function PaymentSuccess() {
     const orderId = searchParams.get('orderId');
     const amount = searchParams.get('amount');
 
-    //debugger;
     if (paymentKey && orderId && amount) {
       // 결제 승인 요청
       //confirmPayment({ paymentKey, orderId, amount: Number(amount) });
