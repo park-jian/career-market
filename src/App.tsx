@@ -14,7 +14,6 @@ import Secession from './pages/user/Secession'; //탈퇴
 
 //이력서
 import ResumeRegister from './pages/resume/Register';  //이력서 등록
-import ResumeEdit from './pages/resume/Edit';  //이력서 수정
 import ResumeList from './pages/resume/List';  //이력서 조회
 import PendingResumeList from './pages/resume/PendingResumeList'; //판매 요청중인 이력서 조회
 import PendingResumeView from './pages/resume/PendingResumeView'; //판매 요청중인 이력서 단건 조회
@@ -89,7 +88,6 @@ const App: React.FC = () => {
           <Route path="/resumes/pending" element={<PrivateRoute><PendingResumeList /></PrivateRoute>} />
           <Route path="/resumes/pending/:resumeId" element={<PrivateRoute><PendingResumeView /></PrivateRoute>} />
           <Route path="/resumes/register" element={<ResumeRegister />} />
-          <Route path="/resumes/:id" element={<PrivateRoute><ResumeEdit /></PrivateRoute>} />
           <Route path="/resumes/sale-resumes/" element={<PrivateRoute><MySalesResumes /></PrivateRoute>} />
           <Route path="/orders" element={<PrivateRoute><OrderList /></PrivateRoute>} />
           <Route path="/orders/:orderId" element={<PrivateRoute><OrderView /></PrivateRoute>} />

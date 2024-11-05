@@ -22,14 +22,14 @@ export interface ResumeRequestInfo {
 
 export interface ResumeRequestOneInfo {//관리자 단건 조회
     id: number;
-    email: string;
-    field: string;
-    level: string;
-    price: number;
-    resume_url: string;
-    description: string;
-    description_image_url: string;
-    status: string;
+    email?: string;
+    field?: string;
+    level?: string;
+    price?: number;
+    resume_url?: string;
+    description?: string;
+    description_image_url?: string;
+    status?: string;
   }
   export interface PendingResumeOneType {//요청중인 이력서 단건
     field: string;
@@ -51,3 +51,30 @@ export interface PendingResumeType {//요청중인 이력서 전체
     status: string;
     modified_at: string;
   }
+
+  export interface ListParams {//리스트, 나의 판매글
+    sortType?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    field?: string;
+    level?: string;
+    pageStep?: string;
+    lastId?: number;
+  }
+
+  export interface AdminListParams {
+    periodCond?: string;
+    status?: string;
+    pageStep?: string;
+    lastId?: number;
+    lastModifiedAt?: string
+  }
+  // export interface GetMyListParams {
+  //   sortType?: string;
+  //   minPrice?: number;
+  //   maxPrice?: number;
+  //   field?: string;
+  //   level?: string;
+  //   pageStep?: string;
+  //   lastId?: number;
+  // }

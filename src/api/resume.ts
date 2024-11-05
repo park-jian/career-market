@@ -2,7 +2,7 @@
 import {ResumeInfo} from '../types/resume'
 import api from '../api/axiosConfig';
 import axios from 'axios';
-import {PendingResumeType, PendingResumeOneType} from '../types/resume';
+import {PendingResumeType, PendingResumeOneType, ListParams, AdminListParams} from '../types/resume';
 // interface resumeDataType {
 //   field: string;
 //   level: string;
@@ -64,27 +64,10 @@ export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 
 export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
 export type PageStep = 'FIRST' | 'NEXT' | 'PREVIOUS' | 'LAST';
 // request parameter interface 정의
-interface GetMyListParams {
-  sortType?: SortType;
-  minPrice?: number;
-  maxPrice?: number;
-  field?: FieldCond;
-  level?: LevelCond;
-  pageStep: PageStep;
-  limit?: number;
-  lastId?: number;
-}
+
 
 //모든 사용자 판매글 페이지 조회
-export const getList = async (params?: {
-  sortType?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  field?: string;
-  level?: string;
-  pageStep?: string;
-  lastId?: number;
-}) => {
+export const getList = async (params?: ListParams) => {
   try {
     const response = await api.get(`/open-api/v1/sales-posts`,{
       params: {
@@ -128,9 +111,9 @@ export const addNewResume = async (resume: Omit<ResumeInfo, 'id'>): Promise<Resu
   }
 };
 //나의 판매중인 판매글 조회
-export const getMyList = async (params: GetMyListParams) => {
+export const getMyList = async (params: ListParams) => {
   try {
-    const response = await api.get<ApiResponse2>(`api/v1/sales-posts`, {
+    const response = await api.get(`api/v1/sales-posts`, {
       params: {
         sortType: params.sortType,
         minPrice: params.minPrice,
@@ -138,19 +121,13 @@ export const getMyList = async (params: GetMyListParams) => {
         field: params.field,
         level: params.level,
         pageStep: params.pageStep || 'FIRST',
-        limit: params.limit || 6,
+        limit: 6,
         lastId: params.lastId
       }
     });
-    const result = response.data.result;
-    const data = response.data.body;
-    return {
-      result_code: result.result_code,
-      result_message: result.result_message,
-      data: data
-    }
-  } catch (error) {//debugger;
-    console.error('Error adding new resume:', error);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding new resume:', error);//이거 없애면 왜 에러나?
     throw error;
   }
 };
@@ -223,13 +200,18 @@ export const updateResume = async (resumeId: number, resumeData: UpdateResumeDat
     throw error;
   }
 }
-export const getAdminResumeList = async () => {//관리자 요청 이력서 조회
-  try {
+export const getAdminResumeList = async (params?: AdminListParams) => {//관리자 요청 이력서 조회
+  try {debugger;
     const response = await api.get(`/admin-api/v1/resumes`,{
       params: {
-        pageStep: 'FIRST',
-        limit: 6
-      }});
+        periodCond: params?.periodCond,
+        status: params?.status,
+        pageStep: params?.pageStep || 'FIRST',
+        limit: 6,
+        lastModifiedAt: params?.lastModifiedAt,
+        lastId: params?.lastId
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error adding new resume:', error);

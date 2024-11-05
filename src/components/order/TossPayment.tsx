@@ -1,4 +1,4 @@
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import { loadTossPayments, TossPaymentsPayment  } from "@tosspayments/tosspayments-sdk";
 import React, { useEffect, useState } from "react";
 
 // ------  SDK 초기화 ------
@@ -13,56 +13,56 @@ interface Amount {
 const amount: Amount = {
   currency: "KRW",
   value: 50000,
-};
-interface PaymentRequestParams {
-  method: 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT' | 'MOBILE_PHONE' | 'CULTURE_GIFT_CERTIFICATE' | 'FOREIGN_EASY_PAY';
-  amount: {
-    currency: string; // 통화
-    value: number; // 금액
-  };
-  orderId: string; // 고유 주문번호
-  orderName: string; // 주문 이름
-  successUrl: string; // 성공 시 리다이렉트 URL
-  failUrl: string; // 실패 시 리다이렉트 URL
-  customerEmail: string; // 고객 이메일
-  customerName: string; // 고객 이름
-  customerMobilePhone: string; // 고객 전화번호
-  card?: { // 카드 관련 속성
-    useEscrow: boolean;
-    flowMode: string;
-    useCardPoint: boolean;
-    useAppCardOnly: boolean;
-  };
-  transfer?: { // 계좌이체 관련 속성
-    cashReceipt: {
-      type: string; // 소득공제 등
-    };
-    useEscrow: boolean; // 에스크로 사용 여부
-  };
-  virtualAccount?: { // 가상계좌 관련 속성
-    cashReceipt: {
-      type: string; // 소득공제 등
-    };
-    useEscrow: boolean; // 에스크로 사용 여부
-    validHours: number; // 유효 시간
-  };
-  foreignEasyPay?: {
-    provider: string,
-    country: string,
-  },
-}
+ };
+// interface PaymentRequestParams {
+//   method: 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT' | 'MOBILE_PHONE' | 'CULTURE_GIFT_CERTIFICATE' | 'FOREIGN_EASY_PAY';
+//   amount: {
+//     currency: string; // 통화
+//     value: number; // 금액
+//   };
+//   orderId: string; // 고유 주문번호
+//   orderName: string; // 주문 이름
+//   successUrl: string; // 성공 시 리다이렉트 URL
+//   failUrl: string; // 실패 시 리다이렉트 URL
+//   customerEmail: string; // 고객 이메일
+//   customerName: string; // 고객 이름
+//   customerMobilePhone: string; // 고객 전화번호
+//   card?: { // 카드 관련 속성
+//     useEscrow: boolean;
+//     flowMode: string;
+//     useCardPoint: boolean;
+//     useAppCardOnly: boolean;
+//   };
+//   transfer?: { // 계좌이체 관련 속성
+//     cashReceipt: {
+//       type: string; // 소득공제 등
+//     };
+//     useEscrow: boolean; // 에스크로 사용 여부
+//   };
+//   virtualAccount?: { // 가상계좌 관련 속성
+//     cashReceipt: {
+//       type: string; // 소득공제 등
+//     };
+//     useEscrow: boolean; // 에스크로 사용 여부
+//     validHours: number; // 유효 시간
+//   };
+//   foreignEasyPay?: {
+//     provider: string,
+//     country: string,
+//   },
+// }
 
-interface BillingAuthParams {
-  method: string; // 자동 결제 방법
-  successUrl: string; // 성공 시 리다이렉트 URL
-  failUrl: string; // 실패 시 리다이렉트 URL
-  customerEmail: string; // 고객 이메일
-  customerName: string; // 고객 이름
-}
-interface TossPaymentsPayment {
-  requestPayment: (params: PaymentRequestParams) => Promise<void>;
-  requestBillingAuth: (params: BillingAuthParams) => Promise<void>;
-}
+// interface BillingAuthParams {
+//   method: string; // 자동 결제 방법
+//   successUrl: string; // 성공 시 리다이렉트 URL
+//   failUrl: string; // 실패 시 리다이렉트 URL
+//   customerEmail: string; // 고객 이메일
+//   customerName: string; // 고객 이름
+// }
+// interface TossPaymentsPayment {
+//   requestPayment: (params: PaymentRequestParams) => Promise<void>;
+//   requestBillingAuth: (params: BillingAuthParams) => Promise<void>;
+// }
 const TossPayment: React.FC = () => {
   const [payment, setPayment] = useState<TossPaymentsPayment | null>(null); // 타입을 TossPaymentsPayment로 설정할 수 있습니다.
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);

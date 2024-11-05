@@ -25,7 +25,7 @@ export const useLogin = () => {
           { withCredentials: true }
         );
         
-        if (response.data.result.result_code === 200) {//debugger;
+        if (response.data.result.result_code === 200) {
           const { access_token} = response.data.body;
           const refresh_token = response.headers['refresh-token'];
           console.log("Headers refresh token:", refresh_token);
@@ -109,16 +109,15 @@ export const useSignup = () => {
         if (!rf_token) {
           return null;
         }
-        //debugger;
         //로그인시에도 여기를 타고 ac, rf,있는데 그때는 user가 있음
         if (rf_token && !user) {
           try {
             //   const response = await api.post('/api/v1/token/reissue').then(
             //     (result) => {
-            //         console.log("API 성공:", result);//debugger;
+            //         console.log("API 성공:", result);
             //         return result;
             //     },
-            //     (error) => {//debugger;
+            //     (error) => {
             //         console.log("API 실패:", error);
             //         throw error;
             //     }
@@ -130,7 +129,6 @@ export const useSignup = () => {
                 'Refresh-Token': rf_token // refresh token을 헤더에 추가
               }
             });
-              //debugger;
               console.log("reissue API 응답:", response);
       
               if (response.data.body?.access_token) {
@@ -158,7 +156,7 @@ export const useSignup = () => {
               if (window.location.pathname !== '/users/login') {
                   window.location.href = '/users/login';
               }
-          } catch (reissueError) {//debugger;
+          } catch (reissueError) {
               console.error("토큰 재발급 API 호출 실패:", reissueError);
               throw reissueError;
           }
@@ -168,7 +166,6 @@ export const useSignup = () => {
         
         return null;
       } catch (error) {
-        //debugger;
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           tokenUtils.clearTokens();
           if (window.location.pathname !== '/users/login') {

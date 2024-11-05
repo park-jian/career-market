@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import OrderCard from '../../components/order/OrderCard';
-import { OrderInfo, OrderOneInfo } from '../../types/order';
+import { OrderType } from '../../types/order';
 import { useUser } from '../../hooks/useUser';
 import { getOrderList } from '../../api/order';
 import axios from 'axios';
-
-interface OrderType {
-  order_id: number;
-  order_title: string;
-  status: string;
-  total_amount: number;
-}
 
 const OrderList: React.FC = () => {
   const [orderData, setOrderData] = useState<OrderType[]>([]);
@@ -49,35 +42,35 @@ const OrderList: React.FC = () => {
 
     fetchOrderList();
   }, [user]);
-
-  if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
-    </div>;
-  }
-
-  if (error) {
-    return <div className="flex justify-center items-center min-h-screen">
-      <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg shadow">{error}</div>
-    </div>;
-  }
-
   return (
     <div className="bg-gray-50 min-h-screen py-8">
      <div className="max-w-4xl mx-auto px-4">
        <div className="flex justify-between items-center mb-8">
          <h1 className="text-3xl font-bold text-gray-800">주문 내역 조회</h1>
        </div>
-
-       <ul className="space-y-4">
-         {orderData && orderData.map((order: OrderType) => (
-           <li key={order.order_id} className="flex items-center space-x-4">
-             <div className="flex-1">
-               <OrderCard order={order} />
-             </div>
-           </li>
-         ))}
-       </ul>
+       {loading ? (
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+          </div>
+          ) : error ? (
+          <div className="text-center mt-20">
+            <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg shadow inline-block">
+              {error}
+            </div>
+          </div>
+          ) : (
+          <>
+            <div className="space-y-4">
+              {orderData && orderData.map((order: OrderType) => (
+                <div key={order.order_id} className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <OrderCard order={order} />
+                  </div>
+                </div>
+              ))}
+            </div>     
+          </>
+          )}
      </div>
    </div>
  );

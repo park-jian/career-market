@@ -58,8 +58,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       <div className="flex items-stretch">
         <div className="flex-1 p-4">
 
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center flex-shrink-0">
               <IoNewspaperOutline className="w-5 h-5 text-yellow-500" />
             </div>
             <div className="flex-1">
@@ -72,13 +72,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center px-6 border-l border-gray-100">
+        <div className="flex items-center justify-center px-6 border-l border-gray-100 min-w-[120px]"> {/* 최소 너비 지정 */}
           <div className="flex items-center space-x-3 mb-3">
-            <span className={`text-sm font-medium px-3 py-1 rounded-full ${getStatusColor(status)}`}>
+            <span className={`w-32 text-sm font-medium px-3 py-1 text-center whitespace-nowrap overflow-hidden text-ellipsis ${getStatusColor(status)}`}>
               {getStatusText(status)}
             </span>
           </div>
-          
         </div>
       </div>
     </li>

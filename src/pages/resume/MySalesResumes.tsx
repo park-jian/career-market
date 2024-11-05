@@ -1,116 +1,200 @@
-import React, { useState, useEffect }  from 'react';
-import Pagination from "../../components/Pagination"
-import {getMyList} from "../../api/resume";
-import { useUser } from '../../hooks/useUser';
-import axios from 'axios';
-interface Resume {
-  id: number;
-  title: string;
-  sales_quantity: string;
-  status: string;
-  registered_at: string;
-}
-
+import React, { useEffect, useState } from 'react';
+import Pagination from '../../components/Pagination'
+import {getMyList} from '../../api/resume';
+import ResumeCard from '../../components/resume/ResumeCard';
+import { MdOutlineFilterList } from "react-icons/md";
+// import useResumes from '../../hooks/useResume';
+import { ResumeInfo, ListParams } from '../../types/resume';
 const MySalesResumes: React.FC = () => {
-  const [resumeData, setResumeData] = useState<Resume[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const { resumesQuery: { isLoading, error, data: resumes }, } = useResumes();
+  const [resumes, setResumes] = useState<ResumeInfo[]>([]);
+  const [lastId, setLastId] = useState<number | undefined>();
+  const [sortType, setSortType] = useState<string | undefined>();//정렬조건
+  const [minPrice, setMinPrice] = useState<number | undefined>();//최소가격
+  const [maxPrice, setMaxPrice] = useState<number | undefined>();//최대가격
+  const [field, setField] = useState<string | undefined>();//분야
+  const [level, setLevel] = useState<string | undefined>();//년차
   const [error, setError] = useState<string | null>(null);
-  const { data: user } = useUser();
-  useEffect(() => {
-    const fetchResumeData = async () => {
-      try {
-        if (!user) {
-          setLoading(false);
-          return;
-        }
-        setError(null);
-        const response = await getMyList();
-        console.log("response:",response)
-        //setResumeData(data);
-        if (response?.result_code === 200) {//debugger;
-          setResumeData(response.data || []);
+  //const [pageStep, setPageStep] = useState<string>('FIRST');
+  const handlePageChange = async (newPage: number, pageStep: string) => {
+    try {
+      console.log("페이지이동:", newPage);
+      const params: ListParams = {
+        pageStep: pageStep,
+        // 기존 필터 조건들 유지
+        ...(sortType && { sortType }),
+        ...(minPrice && { minPrice }),
+        ...(maxPrice && { maxPrice }),
+        ...(field && { field }),
+        ...(level && { level }),
+        ...(lastId && { lastId })
+      };
 
-        } else {
-          setError(response?.result_message || '데이터를 가져오는데 실패했습니다.');
+      const data = await getMyList(params);
+      if (data?.result?.result_code === 200) {
+        setLastId(data.body.last_id);
+        setResumes(data.body.results);
+        //setPageStep(pageStep);  // 현재 pageStep 업데이트
+      }
+    } catch (err) {
+      console.error('Failed to fetch page:', err);
+    }
+  };
+  useEffect(() => {
+    const fetchResumes = async () => {
+      try {
+        const initialParams: ListParams = {
+          pageStep: 'FIRST'
+        };
+        const data = await getMyList(initialParams);
+        if (data?.result?.result_code === 200) {
+          const last_id = data.body.last_id;
+          setLastId(last_id);
+          const resumeMySalesResumes = data.body.results;
+          setResumes(resumeMySalesResumes);
         }
-      }  catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.result?.result_message || '데이터를 가져오는데 실패했습니다.');
-          console.error('Error response:', err.response?.data);
-        } else if (typeof err === 'object' && err !== null && 'status' in err && 'code' in err) {
-          //debugger;
-          const error = err as { status?: number; code?: number; message?: string }; // 타입 단언
-          if (error.status === 404 && error.code === 5404) {
-            setError(error.message || '데이터를 가져오는데 실패했습니다.');
+      } catch (err) {
+        if (err instanceof Error) {  // Error 타입인지 체크
+          setError(err.message);
+        } else if (typeof err === 'object' && err !== null && 'code' in err) {  // code 속성이 있는 객체인지 체크
+          const error = err as { code: number; message: string };
+          if (error.code === 5404) {
+            setError(error.message);
           }
         } else {
-          setError('알 수 없는 오류가 발생했습니다.');
+          setError('알 수 없는 에러가 발생했습니다.');
         }
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchResumeData();
-  }, [user]);
-  const handlePageChange = (newPage: number) => {
-    // 페이지 변경 로직 구현
-    console.log("New page:", newPage);
-  };
-
-  // 유저 정보가 없을 때
-  if (!user) {
-    return <div className="p-6 text-center">로그인이 필요한 서비스입니다.</div>;
+    fetchResumes();
+  }, []);
+  const handleSort = async () => {
+    try {
+      // 선택된 값들만 파라미터에 포함
+      const params: ListParams = {
+        pageStep: 'FIRST',  // 필수값
+      };
+  
+      if (sortType) params.sortType = sortType;
+      if (minPrice) params.minPrice = minPrice;
+      if (maxPrice) params.maxPrice = maxPrice;
+      if (field) params.field = field;
+      if (level) params.level = level;
+      if (lastId) params.lastId = lastId;
+  
+      const data = await getMyList(params);
+      if (data?.result?.result_code === 200) {
+        setLastId(data.body.last_id);
+        setResumes(data.body.results);
+      }
+    } catch (err) {
+      console.error('Failed to fetch sorted resumes:', err);
+    }
   }
-
-  // 데이터 로딩 중일 때
-  if (loading) {
-    return <div className="p-6 text-center">데이터를 불러오는 중...</div>;
-  }
-
-  // 에러가 있을 때
   if (error) {
-    return <div className="p-6 text-center text-red-500"> {error}</div>;
+    return (
+      <div className="text-center mt-20">
+        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg shadow inline-block">{error}</div>
+      </div>
+    );
   }
-
-  // 데이터가 없을 때
-  if (resumeData.length === 0) {
-    return <div className="p-6 text-center">판매 중인 이력서가 없습니다.</div>;
-  }
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
   return (
-    <div className="p-6 w-full max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">판매중인 판매글 내역 조회</h1>
-      <div className="overflow-x-auto ">
-        <div className='border border-gray-300'>
-          <div className="bg-gray-100 flex font-bold text-sm ">
-            <div className="w-[10%] min-w-[60px] p-3 border-r border-gray-300 flex items-center justify-center">#</div>
-            <div className="w-[40%] min-w-[200px] p-3 border-r border-gray-300 flex items-center justify-center">제목</div>
-            <div className="w-[10%] min-w-[80px] p-3 border-r border-gray-300 flex items-center justify-center">판매량</div>
-            <div className="w-[25%] min-w-[150px] p-3 border-r border-gray-300 flex items-center justify-center">등록 날짜</div>
-            <div className="w-[15%] min-w-[100px] p-3 flex items-center justify-center">상태</div>
+    <div className='w-full py-6'>
+      <div className='w-full max-w-[1280px] mx-auto px-4'>
+        {/* 필터 영역 */}
+        <div className="flex flex-wrap gap-3 mb-6 w-full">
+          {/* 정렬 조건 */}
+          <div className="flex-1">
+            <select 
+              onChange={(e) => setSortType(e.target.value)} 
+              value={sortType}
+              className="w-full bg-transparent focus:outline-none text-sm p-2 rounded-lg border"
+            >
+              <option value="">정렬 조건</option>
+              <option value="OLD">오래된 순</option>
+              <option value="NEW">최신 순</option>
+              <option value="HIGHEST_PRICE">가격 높은 순</option>
+              <option value="LOWEST_PRICE">가격 낮은 순</option>
+              <option value="VIEW_COUNT">조회 수 순</option>
+              <option value="BEST_SELLING">베스트셀러 순</option>
+            </select>
           </div>
-          {resumeData.map((resume, index) => (
-            <div key={resume.id} className={`flex text-sm ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-              <div className="w-[10%] min-w-[60px] p-3 border-r border-gray-300 flex items-center justify-center">{resume.id}</div>
-              <div className="w-[40%] min-w-[200px] p-3 border-r border-gray-300 flex items-center truncate">{resume.title}</div>
-              <div className="w-[10%] min-w-[80px] p-3 border-r border-gray-300 flex items-center justify-center">{resume.sales_quantity}</div>
-              <div className="w-[25%] min-w-[150px] p-3 border-r border-gray-300 flex items-center truncate">{resume.registered_at}</div>
-              <div className="w-[15%] min-w-[100px] p-3 flex items-center justify-center">
-                <span className='w-full text-left px-2 py-1 bg-gray-300 hover:bg-gray-500 hover:text-white cursor-pointer rounded'>{resume.status}</span>
-              </div>
-            </div>
-          ))}
+  
+          {/* 가격 범위 */}
+          <div className="flex gap-2 flex-1">
+            <input 
+              placeholder="최소가격" 
+              value={minPrice} 
+              onChange={(e) => setMinPrice(Number(e.target.value))} 
+              className="w-full p-2 rounded-lg border text-sm"
+            />
+            <input 
+              placeholder="최대가격" 
+              value={maxPrice} 
+              onChange={(e) => setMaxPrice(Number(e.target.value))} 
+              className="w-full p-2 rounded-lg border text-sm"
+            />
+          </div>
+  
+          {/* 분야 선택 */}
+          <div className="flex-1">
+            <select 
+              onChange={(e) => setField(e.target.value)} 
+              value={field} 
+              className="w-full p-2 rounded-lg border text-sm"
+            >
+              <option value="">분야</option>
+              <option value="FRONTEND">프론트엔드</option>
+              <option value="BACKEND">백엔드</option>
+              <option value="ANDROID">안드로이드</option>
+              <option value="IOS">IOS</option>
+              <option value="DEVOPS">데브옵스</option>
+              <option value="AI">AI</option>
+              <option value="ETC">기타</option>
+            </select>
+          </div>
+  
+          {/* 년차 선택 */}
+          <div className="flex-1">
+            <select 
+              onChange={(e) => setLevel(e.target.value)} 
+              value={level} 
+              className="w-full p-2 rounded-lg border text-sm"
+            >
+              <option value="">년차</option>
+              <option value="NEW">신입</option>
+              <option value="JUNIOR">주니어</option>
+              <option value="SENIOR">시니어</option>
+            </select>
+          </div>
+  
+          {/* 정렬 버튼 */}
+          <button 
+            onClick={handleSort}
+            className="p-2 rounded-lg border hover:bg-gray-100 flex items-center"
+          >
+            <MdOutlineFilterList className="text-gray-500 text-xl" />
+          </button>
         </div>
-        <Pagination 
-          paginationInfo={{ currentPage: 1, totalPages: 10 }}
-          onPageChange={(newPage) => handlePageChange(newPage)} 
-        />
+  
+        {/* 컨텐츠 영역 - 동일한 너비 제한 적용 */}
+        <div className="w-full">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {resumes && Array.isArray(resumes) && resumes.map((resume: ResumeInfo) => (
+              <ResumeCard key={resume.resume_id} resume={resume}/>
+            ))}
+          </ul>
+        </div>
+  
+        <div className="mt-8 flex justify-center">
+          <Pagination 
+            paginationInfo={{ currentPage: 1, totalPages: 10 }}
+            onPageChange={handlePageChange} 
+          />
+        </div>
       </div>
     </div>
   );
 };
-
-
 export default MySalesResumes;
