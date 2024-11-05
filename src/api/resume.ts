@@ -201,7 +201,7 @@ export const updateResume = async (resumeId: number, resumeData: UpdateResumeDat
   }
 }
 export const getAdminResumeList = async (params?: AdminListParams) => {//관리자 요청 이력서 조회
-  try {debugger;
+  try {
     const response = await api.get(`/admin-api/v1/resumes`,{
       params: {
         periodCond: params?.periodCond,
