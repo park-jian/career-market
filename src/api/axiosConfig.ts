@@ -3,7 +3,10 @@ import axios from 'axios';
 // import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: 'http://43.201.73.11:8080',
+  //baseURL: 'http://43.201.73.11:8080',
+  baseURL: process.env.NODE_ENV === 'production' 
+    ? '/api'
+    : 'http://43.201.73.11:8080',
   withCredentials: true
 });
 // 토큰 관련 상태 관리
