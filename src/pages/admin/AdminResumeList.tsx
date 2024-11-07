@@ -4,10 +4,14 @@ import Pagination from '../../components/Pagination'
 import {getAdminResumeList} from '../../api/resume';
 import AdminResumeCard from '../../components/resume/AdminResumeCard';
 import { ResumeRequestInfo, AdminListParams } from '../../types/resume';
+import LogoutButton from '../../components/user/LogoutButton';
+import {useUser} from '../../hooks/useUser';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+
 const AdminResumeList: React.FC = () => {
   // const { resumesQuery: { isLoading, error, data: resumes }, } = useResumes();
-
+  const { data: user } = useUser();
   const [periodCond, setPeriodCond] = useState<string | undefined>();//기간조건
   const [status, setStatus] = useState<string | undefined>();//상태
   const [lastModifiedAt , setLastModifiedAt ] = useState<string | undefined>();//수정날짜
@@ -86,7 +90,6 @@ const AdminResumeList: React.FC = () => {
   
       if (periodCond) params.periodCond = periodCond;
       if (status) params.status = status;
-      if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
       if (lastId) params.lastId = lastId;
   
       const data = await getAdminResumeList(params);
@@ -100,6 +103,27 @@ const AdminResumeList: React.FC = () => {
   }
   return (
     <div className='w-full py-6'>
+      <ul className="flex w-full items-center justify-end text-sm relative z-10 py-4">
+        <li className="relative px-4">
+        {user ?  (
+          <Link to="/users/me" className='inline-block transition-colors duration-300'>
+            <span>{user.name}님</span>
+          </Link>
+          ) : (
+            <></>
+          )}
+        </li>
+        <li className="relative px-4">
+        {user ?  (
+           <LogoutButton className='inline-block transition-colors duration-300' />
+        ) : (
+          <Link to="/users/login" className='inline-block transition-colors duration-300'>
+            로그인
+          </Link>
+          
+        )}
+        </li>
+      </ul>
       <div className='w-full max-w-[1280px] mx-auto px-4'>
         {/* 필터 영역 */}
         <div className="flex flex-wrap gap-3 mb-6 w-full">

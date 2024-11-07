@@ -56,6 +56,29 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   return <>{children}</>;
 };
+
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { data: user, isLoading } = useUser();
+  const location = useLocation();
+
+  // 로딩 중일 때의 UI
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/users/login" state={{ from: location }} replace />;
+  }
+  if (user.status !== "ADMIN") {  // 또는 user.role !== 'ADMIN'
+    return <Navigate to="/" replace />;  // 홈으로 리다이렉트
+  }
+
+  return <>{children}</>;
+};
 const App: React.FC = () => {
   // const { data: auth, isLoading } = useAuth();
   const { checkAndRefreshToken } = useCheckAndRefreshToken();
@@ -70,6 +93,8 @@ const App: React.FC = () => {
 
   return (
       <Routes>
+        <Route path="/resumes/admin" element={<AdminRoute><AdminResumeList /></AdminRoute>} />
+        <Route path="/resumes/admin/:resumeId" element={<AdminRoute><AdminResumeView /></AdminRoute>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/" element={<Home />} />
@@ -91,8 +116,7 @@ const App: React.FC = () => {
           <Route path="/resumes/sale-resumes/" element={<PrivateRoute><MySalesResumes /></PrivateRoute>} />
           <Route path="/orders" element={<PrivateRoute><OrderList /></PrivateRoute>} />
           <Route path="/orders/:orderId" element={<PrivateRoute><OrderView /></PrivateRoute>} />
-          <Route path="/resumes/admin" element={<PrivateRoute><AdminResumeList /></PrivateRoute>} />
-          <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} />
+
 
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/transaction" element={<PrivateRoute><Transaction /></PrivateRoute>} />
@@ -101,6 +125,10 @@ const App: React.FC = () => {
           
           {/* NotFound route */}
           <Route path="*" element={<NotFound />} />
+
+
+          
+
         </Route>
       </Routes>
   );

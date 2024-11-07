@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validation"
 import { FaLock } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {useLogin} from '../../hooks/useUser';
 export default function EmailLogin() {
   //const [email, setEmail] = useState("");
@@ -12,7 +12,7 @@ export default function EmailLogin() {
   //const { login } = useAuth();
   // useLogin hook을 컴포넌트 최상위 레벨에서 호출
   const loginMutation = useLogin();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //setEmail(e.target.value);
     const {name, value} = e.target;
@@ -48,8 +48,6 @@ export default function EmailLogin() {
         email: userInfo.email,
         password: userInfo.password
       });
-      // 로그인 성공 시 페이지 이동
-      navigate('/');
     } catch (error) {
       console.error("로그인 실패:", error);
       setUserInfo({ email: "", password: "" });
