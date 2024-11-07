@@ -95,10 +95,6 @@ export default function EmailLogin() {
             <span className="text-red-500 text-xs">비밀 번호를 확인해 주세요</span>
           )}
         </div>
-        <div className="flex justify-start w-3/5 m-2">
-          <input className="mr-2" type="checkbox" />
-          <span className="text-sm">자동로그인</span>
-        </div>
         <button className="my-0.5 mb-3 w-3/5 h-9 rounded-md bg-sky-500 hover:bg-sky-700 text-white">
           SIGN IN
         </button>
