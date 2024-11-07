@@ -25,7 +25,7 @@ interface ResumeInfo {
       className="rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:scale-105"
     >
       <div className="mt-2 px-2 text-lg flex flex-col justify-between items-center">
-        <img src={thumbnail_image_url} alt="Frontend" className="w-60 h-40" />
+        <img src={thumbnail_image_url} alt="Frontend" className="w-60 h-46" />
       </div>
       <div className="p-3">
         <h3 className="truncate font-semibold">{title}</h3>

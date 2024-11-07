@@ -17,7 +17,7 @@ export interface ResumeRequestInfo {
     field: string;
     level: string;
     status: string;
-    modified_at: string;
+    registered_at: string;
 }
 
 export interface ResumeRequestOneInfo {//관리자 단건 조회
