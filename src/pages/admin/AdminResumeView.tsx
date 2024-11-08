@@ -157,7 +157,7 @@ const AdminResumeView: React.FC = () => {
       {/* Status - 읽기 전용 */}
       <div className="flex border">
       <div className='border-r w-2/6 p-3'>Status</div>
-      <div className='w-4/6 p-3 flex'>
+      <div className='w-4/6 p-3'>
         {resumeData.status}
         {resumeData.status === 'PENDING' && (
           <div className="ml-4">

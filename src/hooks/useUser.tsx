@@ -24,6 +24,7 @@ export const useLogin = () => {
           { email, password },
           { withCredentials: true }
         );
+        
         if (response.data.result.result_code === 200) {
           const { access_token} = response.data.body;
           const refresh_token = response.headers['refresh-token'];
@@ -49,12 +50,8 @@ export const useLogin = () => {
         //const { data: auth } = useAuth();
         // 사용자 정보 가져오기
         //const { data: user } = useUser();
-        if (data.status === 'USER') {
-          navigate('/');
-        } else if (data.status === 'ADMIN') {
-          navigate('/resumes/admin');
-        }
 
+        navigate('/');
       },
     });
   };

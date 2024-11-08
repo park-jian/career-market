@@ -5,7 +5,7 @@ interface AdminResumeCardProps {
 }
 const AdminResumeCard: React.FC<AdminResumeCardProps> = ({ resume }) => {
   const navigate = useNavigate();
-  const { id, summary, field, level, status, registered_at } = resume;
+  const { id, summary, field, level, status, modified_at } = resume;
 
   const getStatusStyle = (status: string) => {
     switch(status) {
@@ -48,7 +48,7 @@ const AdminResumeCard: React.FC<AdminResumeCardProps> = ({ resume }) => {
 
         {/* 날짜 */}
         <div className="text-gray-500 min-w-[180px]">
-          {new Date(registered_at).toLocaleString('ko-KR', {
+          {new Date(modified_at).toLocaleString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
