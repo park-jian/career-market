@@ -4,7 +4,13 @@ import { fetchUser, modifyPassword } from '../../api/user';
 import { IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { validatePassword, validateConfirmPassword } from '../../utils/validation';
 import { useUser } from '../../hooks/useUser';
-import {UserStatus} from '../../types/user';
+
+// User 인터페이스 정의 추가
+interface User {
+  email: string;
+  name: string;
+  status: string;
+}
 
 interface PasswordState {
   value: string;
@@ -14,7 +20,7 @@ interface PasswordState {
 
 const Profile: React.FC = () => {
   const { data: user } = useUser();
-  const [userInfo, setUserInfo] = useState<UserStatus | null>(null);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const [password, setPassword] = useState<PasswordState>({ value: "", isValid: false, messageVisible: false });
   const [confirmPassword, setConfirmPassword] = useState<PasswordState>({ value: "", isValid: false, messageVisible: false });
   const [loading, setLoading] = useState(true);
