@@ -51,7 +51,11 @@ export const useLogin = () => {
         // 사용자 정보 가져오기
         //const { data: user } = useUser();
 
-        navigate('/');
+        if (data.status === 'USER') {
+          navigate('/');
+        } else if (data.status === 'ADMIN') {
+          navigate('/resumes/admin');
+        }
       },
     });
   };
@@ -88,7 +92,21 @@ export const useSignup = () => {
         tokenUtils.clearTokens();
         setAuthToken(null);
         // 모든 쿼리 초기화
-        queryClient.clear();
+        // 특정 쿼리들을 명시적으로 무효화
+        queryClient.invalidateQueries({
+          queryKey: ['user'],
+          refetchType: 'none' // 자동으로 다시 fetch하지 않음
+        });
+        
+        queryClient.invalidateQueries({
+          queryKey: ['auth'],
+          refetchType: 'none'
+        });
+        
+        // 명시적으로 데이터 제거
+        queryClient.setQueryData(['user'], null);
+        queryClient.setQueryData(['auth'], null);
+        queryClient.setQueryData(['cart'], null);
         navigate('/');
       },
     });
@@ -191,6 +209,7 @@ export const useSignup = () => {
   };
 // useUser hook 수정
 export const useUser = () => {
+  const queryClient = useQueryClient();
     return useQuery<UserInfo | null>({
       queryKey: ['user'],
       queryFn: async () => {
@@ -202,6 +221,8 @@ export const useUser = () => {
           return response.data.body;
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 401) {
+             // 401 에러 시 user 상태를 null로 설정
+            queryClient.setQueryData(['user'], null);
             return null;
           }
           throw error;

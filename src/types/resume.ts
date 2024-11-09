@@ -17,7 +17,7 @@ export interface ResumeRequestInfo {
     field: string;
     level: string;
     status: string;
-    modified_at: string;
+    registered_at: string;
 }
 
 export interface ResumeRequestOneInfo {//관리자 단건 조회
@@ -67,7 +67,7 @@ export interface PendingResumeType {//요청중인 이력서 전체
     status?: string;
     pageStep?: string;
     lastId?: number;
-    lastModifiedAt?: string
+    registered_at?: string
   }
   // export interface GetMyListParams {
   //   sortType?: string;
