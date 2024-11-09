@@ -220,11 +220,11 @@ export const getAdminResumeList = async (params?: AdminListParams) => {//관리�
     throw error;
   }
 };
-export const getAdminResumeListOne = async (resumeId: string) => {//관리자 요청 이력서 조회
+export const getAdminResumeListOne = async (resumeId: number) => {//관리자 요청 이력서 조회
   try {
     const response = await api.get(`/admin-api/v1/resumes/${resumeId}`,{
       params: {
-        resumeId: resumeId,
+        resumeId,
       }});
     return response.data;
   } catch (error) {
@@ -233,7 +233,7 @@ export const getAdminResumeListOne = async (resumeId: string) => {//관리자 �
   }
 };
 
-export const setAdminApprove = async (resumeId: string) => {//관리자 요청 이력서 승인
+export const setAdminApprove = async (resumeId: number) => {//관리자 요청 이력서 승인
   try {
     const response = await api.post(`/admin-api/v1/resumes/${resumeId}/approve`);
     return response.data;
@@ -242,7 +242,7 @@ export const setAdminApprove = async (resumeId: string) => {//관리자 요청 �
     throw error;
   }
 };
-export const setAdminDeny = async (resumeId: string) => {//관리자 요청 이력서 거절
+export const setAdminDeny = async (resumeId: number) => {//관리자 요청 이력서 거절
   try {
     const response = await api.post(`/admin-api/v1/resumes/${resumeId}/deny`);
     return response.data;

@@ -11,69 +11,78 @@ const AdminResumeView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchResumes = async () => {
-      if (resumeId) {
-        try {
-          setLoading(true);
-          const data = await getAdminResumeListOne(resumeId);
-          if (data.result.result_code === 200) {
-            setResumeData(data.body);
-          }
-        } catch (err) {
-          if (axios.isAxiosError(err)) {
-            // Axios 에러인 경우
-            console.error('Error message:', err.message);
-            console.error('Error response:', err.response?.data);
-          } else {
-            // 일반 에러인 경우
-            console.error('Unexpected error:', err);
-          }
-          console.log('Failed to fetch resumes.');
-        } finally {
-          setLoading(false);
+      if (!resumeId) return;
+      const resumeIdNumber = parseInt(resumeId);
+      if (isNaN(resumeIdNumber)) {
+        console.error('Invalid resume ID');
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const data = await getAdminResumeListOne(resumeIdNumber);
+        if (data.result.result_code === 200) {
+          setResumeData(data.body);
         }
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          // Axios 에러인 경우
+          console.error('Error message:', err.message);
+          console.error('Error response:', err.response?.data);
+        } else {
+          // 일반 에러인 경우
+          console.error('Unexpected error:', err);
+        }
+        console.log('Failed to fetch resumes.');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchResumes();
   }, [resumeId]);
   const handleApprove = async () => {
-    if (resumeId) {
-      try {
-        const data = await setAdminApprove(resumeId);
-        if (data.result.result_code === 200) {
-          //성공
-        }
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          // Axios 에러인 경우
-          console.error('Error message:', err.message);
-          console.error('Error response:', err.response?.data);
-        } else {
-          // 일반 에러인 경우
-          console.error('Unexpected error:', err);
-        }
-        console.log('Failed to fetch resumes.');
+    if (!resumeId) return;
+    
+    const resumeIdNumber = parseInt(resumeId);
+    if (isNaN(resumeIdNumber)) return;
+    try {
+      const data = await setAdminApprove(resumeIdNumber);
+      if (data.result.result_code === 200) {
+        //성공
       }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        // Axios 에러인 경우
+        console.error('Error message:', err.message);
+        console.error('Error response:', err.response?.data);
+      } else {
+        // 일반 에러인 경우
+        console.error('Unexpected error:', err);
+      }
+      console.log('Failed to fetch resumes.');
     }
   }
   const handleDeny = async () => {
-    if (resumeId) {
-      try {
-        const data = await setAdminDeny(resumeId);
-        if (data.result.result_code === 200) {
-          //api 성공로직
-        }
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          // Axios 에러인 경우
-          console.error('Error message:', err.message);
-          console.error('Error response:', err.response?.data);
-        } else {
-          // 일반 에러인 경우
-          console.error('Unexpected error:', err);
-        }
-        console.log('Failed to fetch resumes.');
+    if (!resumeId) return;
+    
+    const resumeIdNumber = parseInt(resumeId);
+    if (isNaN(resumeIdNumber)) return;
+    try {
+      const data = await setAdminDeny(resumeIdNumber);
+      if (data.result.result_code === 200) {
+        //api 성공로직
       }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        // Axios 에러인 경우
+        console.error('Error message:', err.message);
+        console.error('Error response:', err.response?.data);
+      } else {
+        // 일반 에러인 경우
+        console.error('Unexpected error:', err);
+      }
+      console.log('Failed to fetch resumes.');
     }
   }
   if (loading) {
