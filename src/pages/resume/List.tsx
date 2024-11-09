@@ -16,9 +16,9 @@ const List: React.FC = () => {
   const [level, setLevel] = useState<string | undefined>();//년차
   const [error, setError] = useState<string | null>(null);
   //const [pageStep, setPageStep] = useState<string>('FIRST');
-  const handlePageChange = async (newPage: number, pageStep: string) => {
+  //const handlePageChange = async (newPage: number, pageStep: string) => {
+    const handlePageChange = async (pageStep: string) => {
     try {
-      console.log("페이지이동:", newPage);
       const params: ListParams = {
         pageStep: pageStep,
         // 기존 필터 조건들 유지
@@ -190,7 +190,7 @@ const List: React.FC = () => {
   
         <div className="mt-8 flex justify-center">
           <Pagination 
-            paginationInfo={{ currentPage: 1, totalPages: 10 }}
+            //paginationInfo={{ currentPage: 1, totalPages: 10 }}
             onPageChange={handlePageChange} 
           />
         </div>

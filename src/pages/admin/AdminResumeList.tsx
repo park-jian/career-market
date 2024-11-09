@@ -4,13 +4,17 @@ import Pagination from '../../components/Pagination'
 import {getAdminResumeList} from '../../api/resume';
 import AdminResumeCard from '../../components/resume/AdminResumeCard';
 import { ResumeRequestInfo, AdminListParams } from '../../types/resume';
+import LogoutButton from '../../components/user/LogoutButton';
+import {useUser} from '../../hooks/useUser';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+
 const AdminResumeList: React.FC = () => {
   // const { resumesQuery: { isLoading, error, data: resumes }, } = useResumes();
-
+  const { data: user } = useUser();
   const [periodCond, setPeriodCond] = useState<string | undefined>();//기간조건
   const [status, setStatus] = useState<string | undefined>();//상태
-  const [lastModifiedAt , setLastModifiedAt ] = useState<string | undefined>();//수정날짜
+  //const [lastModifiedAt , setLastModifiedAt ] = useState<string | undefined>();//수정날짜
   const [error, setError] = useState<string | null>(null);
   const [resumes, setResumes] = useState<ResumeRequestInfo[]>([]);
   const [lastId, setLastId] = useState<number | undefined>();
@@ -24,11 +28,14 @@ const AdminResumeList: React.FC = () => {
         const data = await getAdminResumeList(initialParams);
         if (data?.result?.result_code === 200) {
           const last_id = data.body.last_id;
-          const last_modified_at = data.body.last_modified_at;
-          setLastModifiedAt(last_modified_at);
+          // const last_modified_at = data.body.last_modified_at;
+          // setLastModifiedAt(last_modified_at);
+          console.log("last_id:", last_id)
           setLastId(last_id);
           const resumeList = data.body.results;
+          console.log("resumeList:", resumeList)
           setResumes(resumeList);
+          setError(null);
         }
       } catch (err) {
         if (err instanceof Error) {  // Error 타입인지 체크
@@ -47,22 +54,26 @@ const AdminResumeList: React.FC = () => {
     fetchResumes();
   }, []);
 
-  const handlePageChange = async (newPage: number, pageStep: string) => {
+  //const handlePageChange = async (newPage: number, pageStep: string) => {
+    const handlePageChange = async (pageStep: string) => {
     try {
-      console.log("페이지이동:", newPage);
       const params: AdminListParams = {
         pageStep: pageStep,
         // 기존 필터 조건들 유지
         ...(periodCond && { periodCond }),
         ...(status && { status })
       };
-      if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
-      console.log("lastModifiedAt:",lastModifiedAt)
+      // if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
+      // console.log("lastModifiedAt:",lastModifiedAt)
       if (lastId) params.lastId = lastId;
+      
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
         setLastId(data.body.last_id);
         setResumes(data.body.results);
+        setError(null);
+        console.log("last_id:", data.body.last_id)
+        console.log("resumeList:", data.body.results)
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       }
     } catch (err) {
@@ -86,13 +97,12 @@ const AdminResumeList: React.FC = () => {
   
       if (periodCond) params.periodCond = periodCond;
       if (status) params.status = status;
-      if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
       if (lastId) params.lastId = lastId;
-  
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
         setLastId(data.body.last_id);
         setResumes(data.body.results);
+        setError(null);
       }
     } catch (err) {
       console.error('Failed to fetch sorted resumes:', err);
@@ -100,6 +110,27 @@ const AdminResumeList: React.FC = () => {
   }
   return (
     <div className='w-full py-6'>
+      <ul className="flex w-full items-center justify-end text-sm relative z-10 py-4">
+        <li className="relative px-4">
+        {user ?  (
+          <Link to="/users/me" className='inline-block transition-colors duration-300'>
+            <span>{user.name}님</span>
+          </Link>
+          ) : (
+            <></>
+          )}
+        </li>
+        <li className="relative px-4">
+        {user ?  (
+           <LogoutButton className='inline-block transition-colors duration-300' />
+        ) : (
+          <Link to="/users/login" className='inline-block transition-colors duration-300'>
+            로그인
+          </Link>
+          
+        )}
+        </li>
+      </ul>
       <div className='w-full max-w-[1280px] mx-auto px-4'>
         {/* 필터 영역 */}
         <div className="flex flex-wrap gap-3 mb-6 w-full">
@@ -156,15 +187,15 @@ const AdminResumeList: React.FC = () => {
               ))}
             </ul>
           </div>
-    
+          </>
+        )}   
           <div className="mt-8 flex justify-center">
             <Pagination 
-              paginationInfo={{ currentPage: lastId || 1, totalPages: 10 }}
+              //paginationInfo={{ currentPage: lastId || 1, totalPages: 10 }}
               onPageChange={handlePageChange} 
             />
           </div>
-          </>
-        )}
+
       </div>
     </div>
   );

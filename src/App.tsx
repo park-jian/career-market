@@ -17,7 +17,7 @@ import ResumeRegister from './pages/resume/Register';  //이력서 등록
 import ResumeList from './pages/resume/List';  //이력서 조회
 import PendingResumeList from './pages/resume/PendingResumeList'; //판매 요청중인 이력서 조회
 import PendingResumeView from './pages/resume/PendingResumeView'; //판매 요청중인 이력서 단건 조회
-import SalesResumeView from './pages/resume/SalesResumeView'; //판매글 단건 상세 조회
+// import SalesResumeView from './pages/resume/SalesResumeView'; //판매글 단건 상세 조회
 import MySalesResumes from './pages/resume/MySalesResumes'; //자신이 판매중인 판매글 내역 조회
 import OrderList from './pages/order/OrderList'; //주문내역 전체 조회
 import OrderView from './pages/order/OrderView'; //주문내역 상세조회
@@ -56,6 +56,28 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   return <>{children}</>;
 };
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { data: user, isLoading } = useUser();
+  const location = useLocation();
+
+  // 로딩 중일 때의 UI
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/users/login" state={{ from: location }} replace />;
+  }
+  if (user.status !== "ADMIN") {  // 또는 user.role !== 'ADMIN'
+    return <Navigate to="/" replace />;  // 홈으로 리다이렉트
+  }
+
+  return <>{children}</>;
+};
 const App: React.FC = () => {
   // const { data: auth, isLoading } = useAuth();
   const { checkAndRefreshToken } = useCheckAndRefreshToken();
@@ -70,6 +92,8 @@ const App: React.FC = () => {
 
   return (
       <Routes>
+        <Route path="/resumes/admin" element={<AdminRoute><AdminResumeList /></AdminRoute>} />
+        <Route path="/resumes/admin/:resumeId" element={<AdminRoute><AdminResumeView /></AdminRoute>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/" element={<Home />} />
@@ -83,7 +107,7 @@ const App: React.FC = () => {
 
           
           <Route path="/resumes/list" element={<ResumeList />} />
-          <Route path="/resumes/:salesPostId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} />
+          {/* <Route path="/resumes/:salesPostId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} /> */}
 
           <Route path="/resumes/pending" element={<PrivateRoute><PendingResumeList /></PrivateRoute>} />
           <Route path="/resumes/pending/:resumeId" element={<PrivateRoute><PendingResumeView /></PrivateRoute>} />
@@ -91,8 +115,8 @@ const App: React.FC = () => {
           <Route path="/resumes/sale-resumes/" element={<PrivateRoute><MySalesResumes /></PrivateRoute>} />
           <Route path="/orders" element={<PrivateRoute><OrderList /></PrivateRoute>} />
           <Route path="/orders/:orderId" element={<PrivateRoute><OrderView /></PrivateRoute>} />
-          <Route path="/resumes/admin" element={<PrivateRoute><AdminResumeList /></PrivateRoute>} />
-          <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} />
+          {/* <Route path="/resumes/admin" element={<PrivateRoute><AdminResumeList /></PrivateRoute>} />
+          <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} /> */}
 
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/transaction" element={<PrivateRoute><Transaction /></PrivateRoute>} />

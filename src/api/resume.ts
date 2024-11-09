@@ -111,19 +111,20 @@ export const addNewResume = async (resume: Omit<ResumeInfo, 'id'>): Promise<Resu
   }
 };
 //나의 판매중인 판매글 조회
-export const getMyList = async (params: ListParams) => {
+export const getMyList = async () => {
   try {
-    const response = await api.get(`api/v1/sales-posts`, {
-      params: {
-        sortType: params.sortType,
-        minPrice: params.minPrice,
-        maxPrice: params.maxPrice,
-        field: params.field,
-        level: params.level,
-        pageStep: params.pageStep || 'FIRST',
-        limit: 6,
-        lastId: params.lastId
-      }
+    const response = await api.get(`api/v1/sales-posts`);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding new resume:', error);//이거 없애면 왜 에러나?
+    throw error;
+  }
+};
+//나의 판매중인 이력서 판매글 상태 변경
+export const modifySalesStatus = async (resume_id: number, status: string) => {
+  try {
+    const response = await api.put(`/api/v1/sales-posts/${resume_id}`, {
+      status
     });
     return response.data;
   } catch (error) {
@@ -208,7 +209,8 @@ export const getAdminResumeList = async (params?: AdminListParams) => {//관리�
         status: params?.status,
         pageStep: params?.pageStep || 'FIRST',
         limit: 6,
-        lastModifiedAt: params?.lastModifiedAt,
+        registered_at: params?.registered_at,
+        //lastModifiedAt: params?.lastModifiedAt,
         lastId: params?.lastId
       }
     });
