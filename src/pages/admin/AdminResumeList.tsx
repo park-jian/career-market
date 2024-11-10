@@ -17,7 +17,7 @@ const AdminResumeList: React.FC = () => {
   //const [lastModifiedAt , setLastModifiedAt ] = useState<string | undefined>();//수정날짜
   const [error, setError] = useState<string | null>(null);
   const [resumes, setResumes] = useState<ResumeRequestInfo[]>([]);
-  const [lastId, setLastId] = useState<number | undefined>();
+  //const [lastId, setLastId] = useState<number | undefined>();
   useEffect(() => {
     const fetchResumes = async () => {
       try {
@@ -27,26 +27,26 @@ const AdminResumeList: React.FC = () => {
   
         const data = await getAdminResumeList(initialParams);
         if (data?.result?.result_code === 200) {
-          const last_id = data.body.last_id;
+          //const last_id = data.body.last_id;
           // const last_modified_at = data.body.last_modified_at;
           // setLastModifiedAt(last_modified_at);
-          console.log("last_id:", last_id)
-          setLastId(last_id);
-          const resumeList = data.body.results;
+          //console.log("last_id:", last_id)
+          //setLastId(last_id);
+          const resumeList = data.body;
           console.log("resumeList:", resumeList)
           setResumes(resumeList);
           setError(null);
+        } else if (data === "") {
+          setResumes([]);
+          // alert('판매글이 존재 하지 않습니다');
         }
       } catch (err) {
-        if (err instanceof Error) {  // Error 타입인지 체크
-          setError(err.message);
-        } else if (typeof err === 'object' && err !== null && 'code' in err) {  // code 속성이 있는 객체인지 체크
-          const error = err as { code: number; message: string };
-          if (error.code === 5404) {
-            setError(error.message);
-          }
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.result?.result_message || '데이터를 가져오는데 실패했습니다.');
+          console.error('Error response:', err.response?.data);
         } else {
           setError('알 수 없는 에러가 발생했습니다.');
+          console.error('Unexpected error:', err);
         }
       }
     };
@@ -57,24 +57,37 @@ const AdminResumeList: React.FC = () => {
   //const handlePageChange = async (newPage: number, pageStep: string) => {
     const handlePageChange = async (pageStep: string) => {
     try {
+      const prevResumes = resumes;
+      console.log("prevResumes:", prevResumes)
+      let calLastId;
+      if (prevResumes.length > 0) {
+        if (pageStep === 'PREVIOUS') {
+          calLastId = prevResumes[0].id;
+        } else if (pageStep === 'NEXT') {
+          calLastId = prevResumes[prevResumes.length - 1].id;
+        }
+      }
       const params: AdminListParams = {
         pageStep: pageStep,
         // 기존 필터 조건들 유지
         ...(periodCond && { periodCond }),
-        ...(status && { status })
+        ...(status && { status }),
+        ...(calLastId && { lastId: calLastId })
       };
       // if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
       // console.log("lastModifiedAt:",lastModifiedAt)
-      if (lastId) params.lastId = lastId;
-      
+      //if (lastId) params.lastId = lastId;
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
-        setLastId(data.body.last_id);
-        setResumes(data.body.results);
+        //setLastId(data.body.last_id);
+        setResumes(data.body);
         setError(null);
-        console.log("last_id:", data.body.last_id)
-        console.log("resumeList:", data.body.results)
+        //console.log("last_id:", data.body.last_id)
+        console.log("resumeList:", data.body)
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
+      } else if (data === "") {
+        setResumes([]);
+        //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -97,15 +110,24 @@ const AdminResumeList: React.FC = () => {
   
       if (periodCond) params.periodCond = periodCond;
       if (status) params.status = status;
-      if (lastId) params.lastId = lastId;
+      //if (lastId) params.lastId = lastId;
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
-        setLastId(data.body.last_id);
-        setResumes(data.body.results);
+        //setLastId(data.body.last_id);
+        setResumes(data.body);
         setError(null);
+      } else if (data === "") {
+        setResumes([]);
+        //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err) {
-      console.error('Failed to fetch sorted resumes:', err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.result?.result_message || '데이터를 가져오는데 실패했습니다.');
+        console.error('Error response:', err.response?.data);
+      } else {
+        setError('알 수 없는 에러가 발생했습니다.');
+        console.error('Unexpected error:', err);
+      }
     }
   }
   return (

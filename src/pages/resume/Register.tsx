@@ -3,7 +3,8 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTextLength } from '../../utils/validation';
 import Select from '../../components/resume/Select'
-import {ResumeRegister} from '../../api/resume';
+import { ResumeRegister } from '../../api/resume';
+import { resumeDataType } from '../../types/resume';
 
 const fieldOptions = [
   { value: 'FRONTEND', label: 'FRONTEND' },
@@ -20,13 +21,7 @@ const levelOptions = [
   { value: 'JUNIOR', label: 'JUNIOR' },
   { value: 'SENIOR', label: 'SENIOR' },
 ];
-interface resumeDataType {
-  field: string;
-  level: string;
-  resume_url: string;
-  price: string;
-  description: string;
-}
+
 const MIN_DESCRIPTION_LENGTH = 100;
 const Register: React.FC = () => {
   const [descriptionLength, setDescriptionLength] = useState<number>(0);

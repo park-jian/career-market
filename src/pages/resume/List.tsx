@@ -5,20 +5,29 @@ import { MdOutlineFilterList } from "react-icons/md";
 import {getList} from '../../api/resume';
 import { ResumeInfo, ListParams } from '../../types/resume';
 import Pagination from '../../components/Pagination'
+import axios from 'axios';
 const List: React.FC = () => {
   // const { resumesQuery: { isLoading, error, data: resumes }, } = useResumes();
   const [resumes, setResumes] = useState<ResumeInfo[]>([]);
-  const [lastId, setLastId] = useState<number | undefined>();
+  //const [lastId, setLastId] = useState<number | undefined>();
   const [sortType, setSortType] = useState<string | undefined>();//정렬조건
   const [minPrice, setMinPrice] = useState<number | undefined>();//최소가격
   const [maxPrice, setMaxPrice] = useState<number | undefined>();//최대가격
   const [field, setField] = useState<string | undefined>();//분야
   const [level, setLevel] = useState<string | undefined>();//년차
-  const [error, setError] = useState<string | null>(null);
   //const [pageStep, setPageStep] = useState<string>('FIRST');
   //const handlePageChange = async (newPage: number, pageStep: string) => {
     const handlePageChange = async (pageStep: string) => {
     try {
+      const prevResumes = resumes;
+      let calLastId;
+      if (prevResumes.length > 0) {
+        if (pageStep === 'PREVIOUS') {
+          calLastId = prevResumes[0].resume_id;
+        } else if (pageStep === 'NEXT') {
+          calLastId = prevResumes[prevResumes.length - 1].resume_id;
+        }
+      }
       const params: ListParams = {
         pageStep: pageStep,
         // 기존 필터 조건들 유지
@@ -27,17 +36,26 @@ const List: React.FC = () => {
         ...(maxPrice && { maxPrice }),
         ...(field && { field }),
         ...(level && { level }),
-        ...(lastId && { lastId })
+        ...(calLastId && { lastId: calLastId })
       };
-
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
-        setLastId(data.body.last_id);
-        setResumes(data.body.results);
+        console.log(data.body)
+        setResumes(data.body);
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
+      } else if (data === "") {
+        setResumes([]);
+        //alert('판매글이 존재 하지 않습니다');
       }
-    } catch (err) {
-      console.error('Failed to fetch page:', err);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 204) {
+          alert('판매글이 존재 하지 않습니다');
+          setResumes([]);
+        } else {
+          alert('오류가 발생했습니다');
+        }
+      }
     }
   };
   useEffect(() => {
@@ -49,21 +67,22 @@ const List: React.FC = () => {
   
         const data = await getList(initialParams);
         if (data?.result?.result_code === 200) {
-          const last_id = data.body.last_id;
-          setLastId(last_id);
-          const resumeList = data.body.results;
-          setResumes(resumeList);
+          // const last_id = data.body.last_id;
+          // setLastId(last_id);
+          setResumes(data.body);
+          console.log("myresume: ", data.body)
+        } else if (data === "") {
+          setResumes([]);
+          //alert('판매글이 존재 하지 않습니다');
         }
-      } catch (err) {
-        if (err instanceof Error) {  // Error 타입인지 체크
-          setError(err.message);
-        } else if (typeof err === 'object' && err !== null && 'code' in err) {  // code 속성이 있는 객체인지 체크
-          const error = err as { code: number; message: string };
-          if (error.code === 5404) {
-            setError(error.message);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          if (err.response?.status === 204) {
+            alert('판매글이 존재 하지 않습니다');
+            setResumes([]);
+          } else {
+            alert('오류가 발생했습니다');
           }
-        } else {
-          setError('알 수 없는 에러가 발생했습니다.');
         }
       }
     };
@@ -82,23 +101,25 @@ const List: React.FC = () => {
       if (maxPrice) params.maxPrice = maxPrice;
       if (field) params.field = field;
       if (level) params.level = level;
-      if (lastId) params.lastId = lastId;
   
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
-        setLastId(data.body.last_id);
-        setResumes(data.body.results);
+       // setLastId(data.body.last_id);
+        setResumes(data.body);
+      } else if (data === "") {
+        setResumes([]);
+        //alert('판매글이 존재 하지 않습니다');
       }
-    } catch (err) {
-      console.error('Failed to fetch sorted resumes:', err);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 204) {
+          alert('판매글이 존재 하지 않습니다');
+          setResumes([]);
+        } else {
+          alert('오류가 발생했습니다');
+        }
+      }
     }
-  }
-  if (error) {
-    return (
-      <div className="text-center mt-20">
-        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg shadow inline-block">{error}</div>
-      </div>
-    );
   }
   return (
     <div className='w-full py-6'>
@@ -117,7 +138,6 @@ const List: React.FC = () => {
               <option value="NEW">최신 순</option>
               <option value="HIGHEST_PRICE">가격 높은 순</option>
               <option value="LOWEST_PRICE">가격 낮은 순</option>
-              <option value="VIEW_COUNT">조회 수 순</option>
               <option value="BEST_SELLING">베스트셀러 순</option>
             </select>
           </div>

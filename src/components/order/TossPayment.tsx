@@ -1,14 +1,10 @@
 import { loadTossPayments, TossPaymentsPayment  } from "@tosspayments/tosspayments-sdk";
 import React, { useEffect, useState } from "react";
+import { Amount } from '../../types/order';
 
 // ------  SDK 초기화 ------
 const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
 const customerKey = generateRandomString();
-
-interface Amount {
-  currency: string;
-  value: number;
-}
 
 const amount: Amount = {
   currency: "KRW",

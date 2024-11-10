@@ -1,21 +1,7 @@
 import React, {useState} from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import {addCart} from '../../api/order';
-interface ResumeState {
-  resume: {
-    resume_id: number;
-    title: string;
-    price: number;
-    thumbnail_image_url: string;
-    description_image_url: string;
-    description: string;
-    sales_quantity: number;
-    field: string;
-    level: string;
-    status: string;
-    registered_at: string;
-  }
-}
+import { addCart } from '../../api/order';
+import { ResumeState } from '../../types/resume';
 
 const SalesResumeListOne: React.FC = () => {
   const location = useLocation();

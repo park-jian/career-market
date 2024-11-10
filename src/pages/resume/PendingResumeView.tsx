@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMyPendingListOne, updateResume } from '../../api/resume';
-import { PendingResumeOneType } from '../../types/resume';
+import { PendingResumeOneType, UpdateResumeData } from '../../types/resume';
 import Select from '../../components/resume/Select';
 const fieldOptions = [
   { value: 'FRONTEND', label: 'FRONTEND' },
@@ -18,13 +18,7 @@ const levelOptions = [
   { value: 'JUNIOR', label: 'JUNIOR' },
   { value: 'SENIOR', label: 'SENIOR' },
 ];
-interface UpdateResumeData {
-  field: 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
-  level: 'NEW' | 'JUNIOR' | 'SENIOR';
-  resume_url: string;
-  price: number;
-  description: string;
-}
+
 const PendingResumeView: React.FC = () => {
   const { resumeId } = useParams<{ resumeId: string }>();
   const [resumeData, setResumeData] = useState<PendingResumeOneType | null>(null);

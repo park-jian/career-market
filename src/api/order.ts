@@ -1,16 +1,7 @@
-import {OrderInfo, CartInfo, OrderOneInfo} from '../types/order'
-interface VerifyCodeResponse {
-  result_code: number;
-  result_message: string;
-}
+import { OrderInfo, CartInfo, OrderOneInfo } from '../types/order'
+import { VerifyCodeResponse, ApiResponse } from '../types/common';
 // API 응답 타입 정의 (필요한 경우)
-interface ApiResponse<T> {
-  result: {
-    result_code: number;
-    result_message?: string;
-  };
-  body: T;
-}
+
 import api from '../api/axiosConfig';
 export const getOrderList = async () => {
     try {

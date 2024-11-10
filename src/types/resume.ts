@@ -1,14 +1,23 @@
+import { ApiResponse } from './common';
+
 export interface ResumeInfo {
     resume_id: number;
     title: string;
     price: number;
     thumbnail_image_url: string;
     sales_quantity: number;
-    view_count: number;
     field: string;
     level: string;
     status: string;
     registered_at: string;
+}
+
+export interface ResumeInfoView {
+  resume_id: number;
+  title: string;
+  sales_quantity: number;
+  status: string;
+  registered_at: string | null;
 }
 
 export interface ResumeRequestInfo {
@@ -69,6 +78,51 @@ export interface PendingResumeType {//요청중인 이력서 전체
     lastId?: number;
     registered_at?: string
   }
+
+  export interface resumeDataType {
+    field: string;
+    level: string;
+    resume_url: string;
+    price: string;
+    description: string;
+  }
+
+  export interface ResumeState {
+    resume: {
+      resume_id: number;
+      title: string;
+      price: number;
+      thumbnail_image_url: string;
+      description_image_url: string;
+      description: string;
+      sales_quantity: number;
+      field: string;
+      level: string;
+      status: string;
+      registered_at: string;
+    }
+  }
+
+  export interface UpdateResumeData {
+    field: 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+    level: 'NEW' | 'JUNIOR' | 'SENIOR';
+    resume_url: string;
+    price: number;
+    description: string;
+  }
+
+  export interface ResumeCardProps {
+    resume: ResumeInfoView;
+  }
+
+  export type ResponsePendingResumeOne = ApiResponse<PendingResumeOneType>;
+
+// ApiResponse3를 제네릭으로 표현
+  export type ResponsePendingResume = ApiResponse<PendingResumeType[]>;
+
+  export type SortType = 'OLD' | 'NEW' | 'HIGHEST_PRICE' | 'LOWEST_PRICE' | 'BEST_SELLING';
+  export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+  export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
   // export interface GetMyListParams {
   //   sortType?: string;
   //   minPrice?: number;
