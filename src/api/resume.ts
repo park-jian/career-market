@@ -61,9 +61,7 @@ export const getMyList = async () => {
 //나의 판매중인 이력서 판매글 상태 변경
 export const modifySalesStatus = async (resume_id: number, status: string) => {
   try {
-    const response = await api.put(`/api/v1/sales-posts/${resume_id}`, {
-      status
-    });
+    const response = await api.put(`/api/v1/sales-posts/${resume_id}?status=${status}`);
     return response.data;
   } catch (error) {
     console.error('Error adding new resume:', error);//이거 없애면 왜 에러나?

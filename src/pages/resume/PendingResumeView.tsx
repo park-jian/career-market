@@ -135,7 +135,6 @@ const PendingResumeView: React.FC = () => {
   //   }
   // };
   const handleFinalSubmit = async () => {
-    console.log('handleFinalSubmit 시작', tempData, resumeId);
     if (!tempData || !resumeId) return;
     // 이미지를 수정하지 않은 경우 기존 이미지 사용
     let imageToSend: File | string | undefined;

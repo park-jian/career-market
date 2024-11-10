@@ -40,7 +40,6 @@ const List: React.FC = () => {
       };
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
-        console.log(data.body)
         setResumes(data.body);
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
@@ -70,7 +69,6 @@ const List: React.FC = () => {
           // const last_id = data.body.last_id;
           // setLastId(last_id);
           setResumes(data.body);
-          console.log("myresume: ", data.body)
         } else if (data === "") {
           setResumes([]);
           //alert('판매글이 존재 하지 않습니다');
@@ -210,7 +208,7 @@ const List: React.FC = () => {
   
         <div className="mt-8 flex justify-center">
           <Pagination 
-            //paginationInfo={{ currentPage: 1, totalPages: 10 }}
+            hasResumes={resumes.length > 0}
             onPageChange={handlePageChange} 
           />
         </div>
