@@ -72,15 +72,16 @@ const Header: React.FC = () => {
           handleMouseLeave();
         }}>
           <div className={`flex flex-row items-center justify-between`}>
-            <ul className={`flex items-center justify-center font-bold text-sm relative z-10 py-2 pl-20`}>
-              <li className="relative px-8" id="resume" onMouseEnter={() => handleMouseOver("resume")}>
-                <strong className={`hover:underline hover:text-red-500`}>이력서</strong>
-              </li>
-              <li className="relative px-4" id="order" onMouseEnter={() => handleMouseOver("order")}>
-                <strong className={`hover:underline hover:text-red-500`}>주문</strong>
-              </li>
-            </ul>
-            <div className="flex justify-end items-center h-full p-3">
+          <div className="hidden sm:block sm:w-1/3"></div>
+          <ul className="flex items-center justify-center font-bold text-sm relative z-10 py-2 w-full sm:w-1/3">
+            <li className="relative px-2 sm:px-8" id="resume" onMouseEnter={() => handleMouseOver("resume")}>
+                <strong className="hover:underline hover:text-red-500">이력서</strong>
+            </li>
+            <li className="relative px-2 sm:px-8 ml-8 sm:ml-16" id="order" onMouseEnter={() => handleMouseOver("order")}>
+                <strong className="hover:underline hover:text-red-500">주문</strong>
+            </li>
+        </ul>
+            <div className="flex justify-end items-center h-full p-3 sm:p-3 w-auto sm:w-1/3">
               <Link to="/" className={linkClass}>
                 <IoIosHome size="24" color={isHovered ? 'black' : 'white'}/>
                 <span className='text-xs mt-1'>홈</span>
