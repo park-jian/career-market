@@ -9,20 +9,9 @@ import { validateEmail, validatePassword, validateConfirmPassword } from "../../
 import api from '../../api/axiosConfig';
 import {verifyCode} from '../../api/user';
 import {useSignup} from '../../hooks/useUser';
-interface VerifyCodeResponse {
-  result_code: number;
-  result_message: string;
-}
-interface MessageProps {
-  keyword: string;
-  message?: string;  // 옵셔널 속성으로 정의
-  status?: boolean;  // 옵셔널 속성으로 정의
-}
-interface UserInfo {
-  name: string;
-  email: string;
-  password: string;
-}
+import {UserInfo} from '../../types/user';
+import {VerifyCodeResponse, MessageProps} from '../../types/common';
+
 function Register() {
   //비밀번호, 비밀번호 확인 저장
   const [confirmPassword, setConfirmPassword] = useState("");

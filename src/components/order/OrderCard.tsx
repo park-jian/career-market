@@ -1,17 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { IoNewspaperOutline } from "react-icons/io5";
-
-interface OrderCardInfo {
-  order_id: number;
-  order_title: string;
-  total_amount: number;
-  status: string;
-}
-
-interface OrderCardProps {
-  order: OrderCardInfo;
-}
+import { OrderCardInfo } from '../../types/order';
 
 const statusMapping: { [key: string]: string } = {
   ORDERED: "주문 생성",
@@ -29,7 +19,7 @@ const getStatusText = (status: string): string => {
   return statusMapping[status] || status;
 };
 
-const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+const OrderCard: React.FC<OrderCardInfo> = ({ order }) => {
   const navigate = useNavigate();
   const { order_id, order_title, total_amount, status } = order;
 

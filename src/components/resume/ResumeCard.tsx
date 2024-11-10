@@ -1,23 +1,12 @@
 import { useNavigate } from "react-router-dom";
-interface ResumeInfo {
-    resume_id: number;
-    title: string;
-    price: number;
-    thumbnail_image_url: string;
-    sales_quantity: number;
-    view_count: number;
-    field: string;
-    level: string;
-    status: string;
-    registered_at: string | null;
-  }
+import { ResumeInfo } from '../../types/resume';
   interface ResumeCardProps {
     resume: ResumeInfo;
   }
   const ResumeCard: React.FC<ResumeCardProps> = ({ resume }) => {
   const navigate = useNavigate();
   const { resume_id, title, price, thumbnail_image_url } = resume;
-  console.log("myresume: ", resume)
+  
   return (
     <li
       onClick={() => {

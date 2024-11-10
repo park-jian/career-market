@@ -2,10 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {useUser} from '../hooks/useUser';
 import LogoutButton from './user/LogoutButton';
-interface NavbarProps {
-  isHovered: boolean;
-  setIsHovered: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { NavbarProps } from '../types/common';
 
 const Navbar: React.FC<NavbarProps> = ({ isHovered, setIsHovered }) => {
   const { data: user } = useUser();

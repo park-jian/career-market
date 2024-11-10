@@ -1,19 +1,10 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {useUser} from '../../hooks/useUser';
+import { LocationState} from '../../types/order';
 // 모듈 임포트 연동방식
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk"
 
-export interface CartResumeItem {
-  cart_resume_id: number;
-  title: string;
-  price: number;
-}
-interface LocationState {
-  selectedProducts: CartResumeItem[];
-  totalQuantity: number;
-  totalPrice: number;
-}
 const Transaction = () => {
   const location = useLocation();
   const { data: user } = useUser();

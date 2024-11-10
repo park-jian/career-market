@@ -1,15 +1,10 @@
 import React from 'react';
 import {RiContractLeftLine, RiArrowLeftLine, RiArrowRightLine, RiContractRightLine } from "react-icons/ri";
-
+import { PaginationProps } from '../types/common';
 // interface PaginationInfo {
 //   currentPage: number;
 //   totalPages: number;
 // }
-interface PaginationProps {
-  //paginationInfo: PaginationInfo;
-  //onPageChange: (page: number, pageStep: string) => void;
-  onPageChange: (pageStep: string) => void;
-}
 
 //const Pagination: React.FC<PaginationProps> = ({ paginationInfo, onPageChange }) => {
   const Pagination: React.FC<PaginationProps> = ({ onPageChange }) => {

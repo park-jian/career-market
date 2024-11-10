@@ -1,12 +1,6 @@
 
 
-import { CartResumeItem } from '../../types/order';
-
-interface CartCardProps {
-  item: CartResumeItem;
-  isSelected: boolean;
-  onSelect: (id: number) => void;
-}
+import { CartCardProps } from '../../types/order';
   
   const CartCard: React.FC<CartCardProps> = ({item, isSelected, onSelect}) => {
   const {cart_resume_id, title, price} = item ;

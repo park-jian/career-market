@@ -4,19 +4,8 @@ import { fetchUser, modifyPassword } from '../../api/user';
 import { IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { validatePassword, validateConfirmPassword } from '../../utils/validation';
 import { useUser } from '../../hooks/useUser';
-
+import { User, PasswordState} from '../../types/user';
 // User 인터페이스 정의 추가
-interface User {
-  email: string;
-  name: string;
-  status: string;
-}
-
-interface PasswordState {
-  value: string;
-  isValid: boolean;
-  messageVisible: boolean;
-}
 
 const Profile: React.FC = () => {
   const { data: user } = useUser();

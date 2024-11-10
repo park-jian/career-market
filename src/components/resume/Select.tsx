@@ -1,17 +1,5 @@
 import React, { ChangeEvent } from 'react';
-
-interface Option {
-  value: string;
-  label: string;
-}
-
-interface SelectProps {
-  options: Option[];
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  className?: string;
-}
+import { SelectProps } from '../../types/common';
 
 const Select: React.FC<SelectProps> = ({ options, value, onChange, placeholder, className = '' }) => {
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {

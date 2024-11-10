@@ -1,17 +1,7 @@
 import { useState } from "react"; // 로컬 상태 관리용
 import {modifySalesStatus} from "../../api/resume";
 import { AxiosError } from 'axios';
-interface ResumeInfo {
-  resume_id: number;
-  title: string;
-  sales_quantity: number;
-  status: string;
-  registered_at: string | null;
-}
-
-interface ResumeCardProps {
-  resume: ResumeInfo;
-}
+import { ResumeCardProps } from '../../types/resume';
 
 const ResumeCard: React.FC<ResumeCardProps> = ({ resume: initialResume }) => {
   // 로컬 상태로 관리

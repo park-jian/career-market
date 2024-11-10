@@ -5,17 +5,8 @@ import { GrPrevious } from "react-icons/gr";
 import { getCartList, deleteCartItem, deleteCartAll } from "../../api/order";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-export interface CartResumeItem {
-  cart_resume_id: number;
-  title: string;
-  price: number;
-}
+import { CartResumeItem} from '../../types/order';
 
-export interface CartInfo {
-  total_quantity: number;
-  total_price: number;
-  cart_resume_responses: CartResumeItem[];
-}
 const Cart: React.FC = () => {
   const { data: user } = useUser();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
