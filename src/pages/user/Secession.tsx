@@ -26,7 +26,6 @@ const Secession: React.FC = () => {
     e.preventDefault();
     // 회원탈퇴 로직 구현
     if (validCheck === true) {
-      console.log('회원탈퇴 요청', { password });
       const result = await secessionMutation.mutateAsync();
       if (result && result.result_code === 200) {
         alert(`${result.result_message}`);

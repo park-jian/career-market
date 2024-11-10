@@ -41,7 +41,6 @@ import RegisterSuccess from './pages/user/RegisterSuccess';
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: user, isLoading } = useUser();
   const location = useLocation();
-  console.log("PrivateRoute:", user);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[200px]">

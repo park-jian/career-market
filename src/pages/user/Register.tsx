@@ -53,7 +53,6 @@ function Register() {
   const handleEmailBlur = () => {//e: React.FocusEvent<HTMLInputElement>
     //이메일 유효성 검사(@기준 앞 구간이 알파벳 또는 숫자 조합, 뒷 구간이 알파벳 숫자 조합, @ 뒷구간에 . 뒷구간이 알파벳)
     const validateEmailResult = validateEmail(userInfo.email);
-    console.log("validateEmailResult:",validateEmailResult !== true )
     setEmailError(validateEmailResult !== true);
   };
   //비밀번호 유효성 체크
@@ -126,7 +125,6 @@ function Register() {
   const handleAuthNumberCheck = async () => {
       try {
         const resultObj = await verifyCode(userInfo.email, authNumber);
-        console.log("handleAuthNumberCheck:",resultObj );
         if (resultObj.result_message === '성공') {
           setAuthError(false);
         } else {
@@ -142,16 +140,8 @@ function Register() {
   //회원 가입 버튼
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("submit_userInfo:", userInfo, emailError, passwordError, confirmPasswordError, authError);
     
     if (emailError !== true && passwordError !== true && confirmPasswordError !== true && authError !== true) {
-      // const resultObj = await fetchSignup(userInfo);
-      // try {
-      //   console.log("회원가입성공:", resultObj);
-      // } catch (err) {
-      //   // console.log(err.response.data);
-      //   console.log("회원가입실패:", err);
-      // }
       try {
         await signup.mutateAsync({
           email: userInfo.email,

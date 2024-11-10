@@ -30,10 +30,8 @@ const AdminResumeList: React.FC = () => {
           //const last_id = data.body.last_id;
           // const last_modified_at = data.body.last_modified_at;
           // setLastModifiedAt(last_modified_at);
-          //console.log("last_id:", last_id)
           //setLastId(last_id);
           const resumeList = data.body;
-          console.log("resumeList:", resumeList)
           setResumes(resumeList);
           setError(null);
         } else if (data === "") {
@@ -58,7 +56,6 @@ const AdminResumeList: React.FC = () => {
     const handlePageChange = async (pageStep: string) => {
     try {
       const prevResumes = resumes;
-      console.log("prevResumes:", prevResumes)
       let calLastId;
       if (prevResumes.length > 0) {
         if (pageStep === 'PREVIOUS') {
@@ -74,16 +71,11 @@ const AdminResumeList: React.FC = () => {
         ...(status && { status }),
         ...(calLastId && { lastId: calLastId })
       };
-      // if (lastModifiedAt) params.lastModifiedAt = lastModifiedAt;
-      // console.log("lastModifiedAt:",lastModifiedAt)
-      //if (lastId) params.lastId = lastId;
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
         //setLastId(data.body.last_id);
         setResumes(data.body);
         setError(null);
-        //console.log("last_id:", data.body.last_id)
-        console.log("resumeList:", data.body)
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
         setResumes([]);
@@ -213,7 +205,7 @@ const AdminResumeList: React.FC = () => {
         )}   
           <div className="mt-8 flex justify-center">
             <Pagination 
-              //paginationInfo={{ currentPage: lastId || 1, totalPages: 10 }}
+              hasResumes={resumes.length > 0}
               onPageChange={handlePageChange} 
             />
           </div>
