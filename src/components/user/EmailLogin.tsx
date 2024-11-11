@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { validateEmail, validatePassword } from "../../utils/validation"
 import { FaLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import {useLogin} from '../../hooks/useUser';
+import {useLogin} from '../../hooks/useAuth';
 export default function EmailLogin() {
   //const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);

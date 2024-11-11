@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchUser, modifyPassword } from '../../api/user';
 import { IoIosCloseCircleOutline, IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { validatePassword, validateConfirmPassword } from '../../utils/validation';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useAuth';
 import { User, PasswordState} from '../../types/user';
 // User 인터페이스 정의 추가
 

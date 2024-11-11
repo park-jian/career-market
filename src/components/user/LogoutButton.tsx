@@ -1,4 +1,4 @@
-import {useLogout} from '../../hooks/useUser';
+import {useLogout} from '../../hooks/useAuth';
 const LogoutButton: React.FC<{ className: string }> = ({ className }) => {
     const logoutMutation = useLogout();
     

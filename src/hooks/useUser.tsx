@@ -123,59 +123,46 @@ export const useSignup = () => {
         //   return { access_token: ac_token };
         // }
         const rf_token = tokenUtils.getRefreshToken();
-        console.log("ac,rf token:", ac_token, rf_token);
+        console.log("<useCheckAndRefreshToken>,ac,rf token,user:", ac_token, rf_token,user);
         if (!rf_token) {
           return null;
         }
         //로그인시에도 여기를 타고 ac, rf,있는데 그때는 user가 있음
-        if (rf_token && !user) {
+        if (rf_token && ac_token && !user) {
           try {
-            //   const response = await api.post('/api/v1/token/reissue').then(
-            //     (result) => {
-            //         console.log("API 성공:", result);
-            //         return result;
-            //     },
-            //     (error) => {
-            //         console.log("API 실패:", error);
-            //         throw error;
-            //     }
-            // );
-            const response = await api.post('/api/v1/token/reissue', null, {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-                'Refresh-Token': rf_token // refresh token을 헤더에 추가
-              }
-            });
-              console.log("reissue API 응답:", response);
+            // const response = await api.post('/api/v1/token/reissue', null, {
+            //   withCredentials: true,
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //     'Refresh-Token': rf_token // refresh token을 헤더에 추가
+            //   }
+            // });
+            // console.log("reissue API 응답:", response);
       
-              if (response.data.body?.access_token) {
-                  try {
-                      //tokenUtils.setTokens(response.data.body.access_token);
-                       // refresh token 유지하면서 access token만 업데이트 기존
-                      tokenUtils.setTokens(response.data.body.access_token, rf_token);
-                      console.log("새 토큰 설정 완료");
-                      
-                      const userResponse = await api.get('/api/v1/users/me');
-                      console.log("사용자 정보 조회 성공:", userResponse);
-                      
-                      const userData = userResponse.data.body;
-                      queryClient.setQueryData(['user'], userData);
-                      
-                      return response.data.body;
-                  } catch (innerError) {
-                      console.error("토큰 설정 또는 사용자 정보 조회 실패:", innerError);
-                      throw innerError;
-                  }
-              }
-              
+            // if (response?.data?.body) {
+
+
+                    //tokenUtils.setTokens(response.data.body, rf_token);
+                    //console.log("새 토큰 설정 완료");
+                    
+                    const userResponse = await api.get('/api/v1/users/me');
+                    console.log("사용자 정보 조회 성공:", userResponse);
+                    
+                    const userData = userResponse.data.body;
+                    queryClient.setQueryData(['user'], userData);
+                    
+                    //return response.data.body;
+
+            //}
+
+           
+          } catch (reissueError) {
+              console.error("토큰 재발급 API 호출 실패:", reissueError);
               console.log("토큰 재발급 실패 - 응답에 access_token이 없음");
               tokenUtils.clearTokens();
               if (window.location.pathname !== '/users/login') {
                   window.location.href = '/users/login';
               }
-          } catch (reissueError) {
-              console.error("토큰 재발급 API 호출 실패:", reissueError);
               throw reissueError;
           }
       }
@@ -207,7 +194,7 @@ export const useSignup = () => {
       staleTime: 4.5 * 60 * 1000, // 4.5분, 만료시 재발급
     });
   };
-// useUser hook 수정
+// useUser 정보
 export const useUser = () => {
   const queryClient = useQueryClient();
     return useQuery<UserInfo | null>({
@@ -228,6 +215,7 @@ export const useUser = () => {
           throw error;
         }
       },
+      enabled: !!tokenUtils.getAccessToken(),
       staleTime: Infinity,
       retry: false,
     });
