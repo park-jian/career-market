@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from "react-icons/fa";
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useAuth';
 
 function RegisterSuccess() {
   const { data: user } = useUser();

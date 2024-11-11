@@ -1,5 +1,5 @@
 import React, { useState, useEffect }  from 'react';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useAuth';
 import { getMyPendingList, deleteResume } from '../../api/resume';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';

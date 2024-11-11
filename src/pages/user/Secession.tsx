@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { verifyPassword } from '../../api/user';
-import { useSecession } from '../../hooks/useUser';
+import { useSecession } from '../../hooks/useAuth';
 const Secession: React.FC = () => {
   const [validCheck, setValidCheck] = useState<boolean | null>(null);
   const [password, setPassword] = useState('');

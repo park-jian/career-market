@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrderCard from '../../components/order/OrderCard';
 import { OrderType } from '../../types/order';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useAuth';
 import { getOrderList } from '../../api/order';
 import axios from 'axios';
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {useUser} from '../../hooks/useUser';
+import {useUser} from '../../hooks/useAuth';
 import { LocationState} from '../../types/order';
 // 모듈 임포트 연동방식
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk"

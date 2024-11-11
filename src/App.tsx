@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import { Route, Routes, Outlet, Navigate, useLocation } from 'react-router-dom';
 import NotFound from './pages/NotFound';
-import {useUser, useCheckAndRefreshToken } from './hooks/useUser';
+import {useUser, useAuth } from './hooks/useAuth';
 //메인페이지
 import Home from './pages/Home';
 
@@ -78,16 +78,15 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <>{children}</>;
 };
 const App: React.FC = () => {
-  // const { data: auth, isLoading } = useAuth();
-  const { checkAndRefreshToken } = useCheckAndRefreshToken();
+  const { initializeAuth } = useAuth();
 
-  // 컴포넌트 마운트 시 토큰 재발급 시도
+  // 컴포넌트 마운트 시 인증 상태 복구
   useEffect(() => {
-    const refreshToken = async () => {
-      await checkAndRefreshToken();
+    const restoreAuth = async () => {
+      await initializeAuth();
     };
-    refreshToken();
-  }, [checkAndRefreshToken]);
+    restoreAuth();
+  }, [initializeAuth]);
 
   return (
       <Routes>

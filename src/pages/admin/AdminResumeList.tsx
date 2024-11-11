@@ -5,7 +5,7 @@ import {getAdminResumeList} from '../../api/resume';
 import AdminResumeCard from '../../components/resume/AdminResumeCard';
 import { ResumeRequestInfo, AdminListParams } from '../../types/resume';
 import LogoutButton from '../../components/user/LogoutButton';
-import {useUser} from '../../hooks/useUser';
+import {useUser} from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 

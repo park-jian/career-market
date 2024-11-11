@@ -8,7 +8,7 @@ import { IconContext } from "react-icons";
 import { validateEmail, validatePassword, validateConfirmPassword } from "../../utils/validation"
 import api from '../../api/axiosConfig';
 import {verifyCode} from '../../api/user';
-import {useSignup} from '../../hooks/useUser';
+import {useSignup} from '../../hooks/useAuth';
 import {UserInfo} from '../../types/user';
 import {VerifyCodeResponse, MessageProps} from '../../types/common';
 

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { BsHandbag } from "react-icons/bs";
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { getCartList } from '../../api/order';
 
