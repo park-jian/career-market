@@ -15,6 +15,7 @@ const List: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState<number | undefined>();//최대가격
   const [field, setField] = useState<string | undefined>();//분야
   const [level, setLevel] = useState<string | undefined>();//년차
+  const [currentPage, setCurrentPage] = useState<string>();
   //const [pageStep, setPageStep] = useState<string>('FIRST');
   //const handlePageChange = async (newPage: number, pageStep: string) => {
     const handlePageChange = async (pageStep: string) => {
@@ -40,10 +41,18 @@ const List: React.FC = () => {
       };
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
-        setResumes(data.body);
+        setResumes(data.body.result);
+        if (data.body.first_page === true) {
+          setCurrentPage('first');
+        } else if (data.body.last_page === true) {
+          setCurrentPage('last');
+        } else if (data.body.first_page === false && data.body.last_page === false) {
+          setCurrentPage('middle');
+        }
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
         setResumes([]);
+        setCurrentPage('none');
         //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err: unknown) {
@@ -68,9 +77,17 @@ const List: React.FC = () => {
         if (data?.result?.result_code === 200) {
           // const last_id = data.body.last_id;
           // setLastId(last_id);
-          setResumes(data.body);
+          setResumes(data.body.result);
+          if (data.body.first_page === true) {
+            setCurrentPage('first');
+          } else if (data.body.last_page === true) {
+            setCurrentPage('last');
+          } else if (data.body.first_page === false && data.body.last_page === false) {
+            setCurrentPage('middle');
+          }
         } else if (data === "") {
           setResumes([]);
+          setCurrentPage('none');
           //alert('판매글이 존재 하지 않습니다');
         }
       } catch (err: unknown) {
@@ -103,9 +120,17 @@ const List: React.FC = () => {
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
        // setLastId(data.body.last_id);
-        setResumes(data.body);
+        setResumes(data.body.result);
+        if (data.body.first_page === true) {
+          setCurrentPage('first');
+        } else if (data.body.last_page === true) {
+          setCurrentPage('last');
+        } else if (data.body.first_page === false && data.body.last_page === false) {
+          setCurrentPage('middle');
+        }
       } else if (data === "") {
         setResumes([]);
+        setCurrentPage('none');
         //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err: unknown) {
@@ -208,7 +233,7 @@ const List: React.FC = () => {
   
         <div className="mt-8 flex justify-center">
           <Pagination 
-            hasResumes={resumes.length > 0}
+            currentPage={currentPage}
             onPageChange={handlePageChange} 
           />
         </div>

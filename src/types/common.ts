@@ -48,7 +48,7 @@
   //pagination
   export interface PaginationProps {
     onPageChange: (pageStep: string) => void;
-    hasResumes: boolean;
+    currentPage: string | undefined;
   }
 
   //Navbar

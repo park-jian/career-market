@@ -27,7 +27,6 @@ interface LoginResponse {
 export const useAuth = () => {
     const queryClient = useQueryClient();
     const [isInitializing, setIsInitializing] = useState(true);
-  
     // 사용자 정보 조회 함수
     const fetchUserInfo = useCallback(async () => {
       try {
@@ -39,7 +38,7 @@ export const useAuth = () => {
       }
     }, []);
   
-    // 토큰 갱신 함수
+    // refresh 토큰으로 access 토큰 갱신 함수
     const refreshTokens = useCallback(async () => {
       try {
         const refreshToken = tokenUtils.getRefreshToken();
@@ -148,14 +147,14 @@ export const useAuth = () => {
     };
   };
   
-  // useUser 훅
+  // useUser 훅 = accesstoken이 있으면 user의 정보를 반환 fetchUserInfo 함수랑 겹침
   export const useUser = () => {
    
     return useQuery<UserInfo | null>({
       queryKey: ['user'],
       queryFn: async () => {
         try {
-            const access_token = tokenUtils.getAccessToken();
+          const access_token = tokenUtils.getAccessToken();
           if (!access_token) {
             return null;
           }

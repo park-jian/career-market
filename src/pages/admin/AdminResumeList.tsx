@@ -17,6 +17,7 @@ const AdminResumeList: React.FC = () => {
   //const [lastModifiedAt , setLastModifiedAt ] = useState<string | undefined>();//수정날짜
   const [error, setError] = useState<string | null>(null);
   const [resumes, setResumes] = useState<ResumeRequestInfo[]>([]);
+  const [currentPage, setCurrentPage] = useState<string>();
   //const [lastId, setLastId] = useState<number | undefined>();
   useEffect(() => {
     const fetchResumes = async () => {
@@ -31,8 +32,14 @@ const AdminResumeList: React.FC = () => {
           // const last_modified_at = data.body.last_modified_at;
           // setLastModifiedAt(last_modified_at);
           //setLastId(last_id);
-          const resumeList = data.body;
-          setResumes(resumeList);
+          setResumes(data.body.result);
+          if (data.body.first_page === true) {
+            setCurrentPage('first');
+          } else if (data.body.last_page === true) {
+            setCurrentPage('last');
+          } else if (data.body.first_page === false && data.body.last_page === false) {
+            setCurrentPage('middle');
+          }
           setError(null);
         } else if (data === "") {
           setResumes([]);
@@ -74,7 +81,14 @@ const AdminResumeList: React.FC = () => {
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
         //setLastId(data.body.last_id);
-        setResumes(data.body);
+        setResumes(data.body.result);
+        if (data.body.first_page === true) {
+          setCurrentPage('first');
+        } else if (data.body.last_page === true) {
+          setCurrentPage('last');
+        } else if (data.body.first_page === false && data.body.last_page === false) {
+          setCurrentPage('middle');
+        }
         setError(null);
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
@@ -106,7 +120,14 @@ const AdminResumeList: React.FC = () => {
       const data = await getAdminResumeList(params);
       if (data?.result?.result_code === 200) {
         //setLastId(data.body.last_id);
-        setResumes(data.body);
+        setResumes(data.body.result);
+        if (data.body.first_page === true) {
+          setCurrentPage('first');
+        } else if (data.body.last_page === true) {
+          setCurrentPage('last');
+        } else if (data.body.first_page === false && data.body.last_page === false) {
+          setCurrentPage('middle');
+        }
         setError(null);
       } else if (data === "") {
         setResumes([]);
@@ -205,7 +226,7 @@ const AdminResumeList: React.FC = () => {
         )}   
           <div className="mt-8 flex justify-center">
             <Pagination 
-              hasResumes={resumes.length > 0}
+              currentPage={currentPage}
               onPageChange={handlePageChange} 
             />
           </div>

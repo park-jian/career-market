@@ -12,25 +12,25 @@ import api from '../api/axiosConfig';
 // let refreshSubscribers: ((token: string) => void)[] = [];
 export const tokenUtils = {
   setTokens: (accessToken: string, refreshToken?: string) => {
-    localStorage.setItem('access_token', accessToken);
+    sessionStorage.setItem('access_token', accessToken);
     if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken);
+      sessionStorage.setItem('refresh_token', refreshToken);
     }
-    console.log("set_access_token:", localStorage.getItem('access_token'));
-    console.log("set_refresh_token:", localStorage.getItem('refresh_token'));
+    console.log("set_access_token:", sessionStorage.getItem('access_token'));
+    console.log("set_refresh_token:", sessionStorage.getItem('refresh_token'));
     api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
   },
 
   clearTokens: () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    console.log("clear_access_token:", localStorage.getItem('access_token'));
-    console.log("clear_refresh_token:", localStorage.getItem('refresh_token'));
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    console.log("clear_access_token:", sessionStorage.getItem('access_token'));
+    console.log("clear_refresh_token:", sessionStorage.getItem('refresh_token'));
     delete api.defaults.headers.common['Authorization'];
   },
 
-  getAccessToken: () => localStorage.getItem('access_token'),
-  getRefreshToken: () => localStorage.getItem('refresh_token'),
+  getAccessToken: () => sessionStorage.getItem('access_token'),
+  getRefreshToken: () => sessionStorage.getItem('refresh_token'),
   // 새로 추가될 메서드들
   // onRefreshed: (token: string) => {
   //   refreshSubscribers.forEach(callback => callback(token));
