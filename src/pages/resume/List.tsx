@@ -42,12 +42,14 @@ const List: React.FC = () => {
       const data = await getList(params);
       if (data?.result?.result_code === 200) {
         setResumes(data.body.result);
-        if (data.body.first_page === true) {
+        if (data.body.first_page === true && data.body.last_page === false) {
           setCurrentPage('first');
-        } else if (data.body.last_page === true) {
+        } else if (data.body.first_page === false && data.body.last_page === true) {
           setCurrentPage('last');
         } else if (data.body.first_page === false && data.body.last_page === false) {
           setCurrentPage('middle');
+        } else if (data.body.first_page === true && data.body.last_page === true) {
+          setCurrentPage('none');
         }
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
@@ -78,12 +80,14 @@ const List: React.FC = () => {
           // const last_id = data.body.last_id;
           // setLastId(last_id);
           setResumes(data.body.result);
-          if (data.body.first_page === true) {
+          if (data.body.first_page === true && data.body.last_page === false) {
             setCurrentPage('first');
-          } else if (data.body.last_page === true) {
+          } else if (data.body.first_page === false && data.body.last_page === true) {
             setCurrentPage('last');
           } else if (data.body.first_page === false && data.body.last_page === false) {
             setCurrentPage('middle');
+          } else if (data.body.first_page === true && data.body.last_page === true) {
+            setCurrentPage('none');
           }
         } else if (data === "") {
           setResumes([]);
@@ -121,12 +125,14 @@ const List: React.FC = () => {
       if (data?.result?.result_code === 200) {
        // setLastId(data.body.last_id);
         setResumes(data.body.result);
-        if (data.body.first_page === true) {
+        if (data.body.first_page === true && data.body.last_page === false) {
           setCurrentPage('first');
-        } else if (data.body.last_page === true) {
+        } else if (data.body.first_page === false && data.body.last_page === true) {
           setCurrentPage('last');
         } else if (data.body.first_page === false && data.body.last_page === false) {
           setCurrentPage('middle');
+        } else if (data.body.first_page === true && data.body.last_page === true) {
+          setCurrentPage('none');
         }
       } else if (data === "") {
         setResumes([]);

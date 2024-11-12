@@ -60,3 +60,10 @@ export interface Amount {
   currency: string;
   value: number;
 }
+
+export interface PaymentInfo {
+  resume_ids: number[];
+  payment_key: string;
+  request_id: string;
+  amount: number;
+}

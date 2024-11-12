@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {useUser} from '../../hooks/useAuth';
 import { LocationState} from '../../types/order';
+import { v4 as uuidv4 } from 'uuid';
 // 모듈 임포트 연동방식
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk"
 
@@ -30,8 +31,9 @@ const Transaction = () => {
   const handleTransaction = async () => {
     console.log("토스 위젯 오픈");
     //결제 창 초기화
-    const tossPayments = await loadTossPayments("test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq");
-    const payment = tossPayments.payment({ customerKey: "20241030@" });
+    //const tossPayments = await loadTossPayments("test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq");
+    const tossPayments = await loadTossPayments(`${import.meta.env.VITE_TOSS_PAYMENT_KEY}`);
+    const payment = tossPayments.payment({ customerKey: `${user.user_id}` });
 
     // 첫 번째 상품명 가져오기
     const firstProductTitle = selectedProducts[0]?.title || "상품";
@@ -39,14 +41,24 @@ const Transaction = () => {
     // (Clock.systemUTC().millis() / 5000) + "#" + userId + "-" + uuidHolder.random()
     // // (uuid 5글자로 통일)
     try {
-    // 현재 시간 (millis) / 5000 + "#" + userId + "-" + uuid 5자리
+      const orderId = Math.floor(Date.now() / 5000) + "_" + `${user.user_id}` + "-" + uuidv4().slice(0, 5);
+      const requestData = {
+        resume_ids: selectedProducts.map(product => product.cart_resume_id),
+        payment_key: import.meta.env.VITE_TOSS_PAYMENT_KEY,
+        request_id: orderId,
+        amount: totalPrice
+      };
+      console.log("requestData:", requestData);
+      localStorage.setItem('paymentRequestData', JSON.stringify(requestData));
+
+      console.log("orderid:",orderId)
       payment.requestPayment({
         method: "CARD",
         amount: {
           currency: "KRW",
           value: totalPrice,
         },
-        orderId: "OJls69lE9SS3baVBUIHQ8",
+        orderId,
         orderName: `${firstProductTitle}${remainingItems}`,
         customerEmail: `${user.email}`,
         customerName: `${user.name}`,
@@ -57,10 +69,10 @@ const Transaction = () => {
           useCardPoint: false,
           useAppCardOnly: false,
         },
-        successUrl: `${import.meta.env.VITE_BASE_URL}/success`,
-        failUrl: `${import.meta.env.VITE_BASE_URL}/fail`,
-        // successUrl: window.location.origin + "/success", // 결제 요청이 성공하면 리다이렉트되는 URL
-        //   failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
+        //successUrl: `${import.meta.env.VITE_BASE_URL}/success`,
+        //failUrl: `${import.meta.env.VITE_BASE_URL}/fail`,
+        successUrl: `${window.location.origin}/success`,
+        failUrl: `${window.location.origin}/fail`
       });
     } catch (error) {
       console.error(error);

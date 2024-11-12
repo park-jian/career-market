@@ -1,4 +1,4 @@
-import { OrderInfo, CartInfo, OrderOneInfo } from '../types/order'
+import { OrderInfo, CartInfo, OrderOneInfo, PaymentInfo } from '../types/order'
 import { VerifyCodeResponse, ApiResponse } from '../types/common';
 // API 응답 타입 정의 (필요한 경우)
 
@@ -123,6 +123,20 @@ export const cancelOrderResumeAll = async (orderId: number): Promise<VerifyCodeR
       result_message: result.result_message
     }
   } catch (error) {
+    console.error('Error adding new order:', error);
+    throw error;
+  }
+};
+//결제완료후 서버로 데이터 전송
+export const paymentConfirm = async (paymentInfo: PaymentInfo): Promise<VerifyCodeResponse> => {
+  try {
+    const response = await api.post(`/api/v1/checkout/confirm`, paymentInfo);
+    const result = response.data.result;
+    return {
+        result_code: result.result_code,
+        result_message: result.result_message
+    }
+   } catch (error) {
     console.error('Error adding new order:', error);
     throw error;
   }
