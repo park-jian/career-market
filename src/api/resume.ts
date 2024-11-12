@@ -10,7 +10,7 @@ import { VerifyCodeResponse, ApiResponseProp } from '../types/common';
 // export type PageStep = 'FIRST' | 'NEXT' | 'PREVIOUS' | 'LAST';
 
 //모든 사용자 판매글 페이지 조회
-export const getList = async (params?: ListParams) => {
+export const getList = async (params?: ListParams) => {debugger;
   const response = await api.get(`/open-api/v1/sales-posts`,{
     params: {
       sortType: params?.sortType,
