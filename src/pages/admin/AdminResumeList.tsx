@@ -33,16 +33,19 @@ const AdminResumeList: React.FC = () => {
           // setLastModifiedAt(last_modified_at);
           //setLastId(last_id);
           setResumes(data.body.result);
-          if (data.body.first_page === true) {
+          if (data.body.first_page === true && data.body.last_page === false) {
             setCurrentPage('first');
-          } else if (data.body.last_page === true) {
+          } else if (data.body.first_page === false && data.body.last_page === true) {
             setCurrentPage('last');
           } else if (data.body.first_page === false && data.body.last_page === false) {
             setCurrentPage('middle');
+          } else if (data.body.first_page === true && data.body.last_page === true) {
+            setCurrentPage('none');
           }
           setError(null);
         } else if (data === "") {
           setResumes([]);
+          setCurrentPage('none');
           // alert('판매글이 존재 하지 않습니다');
         }
       } catch (err) {
@@ -82,17 +85,20 @@ const AdminResumeList: React.FC = () => {
       if (data?.result?.result_code === 200) {
         //setLastId(data.body.last_id);
         setResumes(data.body.result);
-        if (data.body.first_page === true) {
+        if (data.body.first_page === true && data.body.last_page === false) {
           setCurrentPage('first');
-        } else if (data.body.last_page === true) {
+        } else if (data.body.first_page === false && data.body.last_page === true) {
           setCurrentPage('last');
         } else if (data.body.first_page === false && data.body.last_page === false) {
           setCurrentPage('middle');
+        } else if (data.body.first_page === true && data.body.last_page === true) {
+          setCurrentPage('none');
         }
         setError(null);
         //setPageStep(pageStep);  // 현재 pageStep 업데이트
       } else if (data === "") {
         setResumes([]);
+        setCurrentPage('none');
         //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err) {
@@ -121,16 +127,19 @@ const AdminResumeList: React.FC = () => {
       if (data?.result?.result_code === 200) {
         //setLastId(data.body.last_id);
         setResumes(data.body.result);
-        if (data.body.first_page === true) {
+        if (data.body.first_page === true && data.body.last_page === false) {
           setCurrentPage('first');
-        } else if (data.body.last_page === true) {
+        } else if (data.body.first_page === false && data.body.last_page === true) {
           setCurrentPage('last');
         } else if (data.body.first_page === false && data.body.last_page === false) {
           setCurrentPage('middle');
+        } else if (data.body.first_page === true && data.body.last_page === true) {
+          setCurrentPage('none');
         }
         setError(null);
       } else if (data === "") {
         setResumes([]);
+        setCurrentPage('none');
         //alert('판매글이 존재 하지 않습니다');
       }
     } catch (err) {
