@@ -69,10 +69,10 @@ const Transaction = () => {
           useCardPoint: false,
           useAppCardOnly: false,
         },
-        //successUrl: `${import.meta.env.VITE_BASE_URL}/success`,
-        //failUrl: `${import.meta.env.VITE_BASE_URL}/fail`,
-        successUrl: `${window.location.origin}/success`,
-        failUrl: `${window.location.origin}/fail`
+        successUrl: `${import.meta.env.VITE_PRODUCTION_URL}/success`,
+        failUrl: `${import.meta.env.VITE_PRODUCTION_URL}/fail`,
+        //successUrl: `${window.location.origin}/success`,
+        //failUrl: `${window.location.origin}/fail`
       });
     } catch (error) {
       console.error(error);

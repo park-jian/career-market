@@ -1,5 +1,6 @@
 import { OrderInfo, CartInfo, OrderOneInfo, PaymentInfo } from '../types/order'
 import { VerifyCodeResponse, ApiResponse } from '../types/common';
+import axios from 'axios';
 // API 응답 타입 정의 (필요한 경우)
 
 import api from '../api/axiosConfig';
@@ -60,9 +61,20 @@ export const getCartList = async (): Promise<ApiResponse<CartInfo>> => {
         result_code: result.result_code,
         result_message: result.result_message
       }
-    } catch (error) {
-      console.error('Error adding new order:', error);
-      throw error;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.data) {
+        const result = error.response.data.result;
+        if (result) {
+          return {
+            result_code: result.result_code,
+            result_message: result.result_message
+          };
+        }
+      }
+      return {
+        result_code: 500,
+        result_message: '알 수 없는 오류가 발생했습니다.'
+      };
     }
   };
 //장바구니 선택 삭제

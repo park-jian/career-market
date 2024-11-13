@@ -12,7 +12,8 @@ const SalesResumeListOne: React.FC = () => {
     const response = await addCart(resumeData.resume_id);
     if (response?.result_code === 201) {
       setAlertVisible(true)
-
+    } else {
+      alert(`(${response.result_code})${response.result_message}`);
     }
   }
   const handleAlertVisible = () => {
@@ -90,7 +91,20 @@ const SalesResumeListOne: React.FC = () => {
             {/* 버튼 그룹 */}
             <div className="relative">
               <div className="flex gap-2">
-                <button className="flex-1 bg-black text-white py-4">BUY IT NOW</button>
+              <Link to="/transaction"
+              state={{ 
+                selectedProducts: [{
+                  cart_resume_id: resumeData.resume_id,
+                  price: resumeData.price,
+                  title: resumeData.title
+                }],
+                totalQuantity: 1,
+                totalPrice: resumeData.price
+              }}>
+                <button className="flex-1 bg-black text-white py-4">
+                  BUY IT NOW
+                </button>
+              </Link>
                 <div className="flex-1 relative">
                   <button onClick={handleCart} className="w-full border border-gray-300 py-4">CART</button>
                   
