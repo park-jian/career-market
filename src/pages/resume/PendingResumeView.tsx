@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getMyPendingListOne, updateResume } from '../../api/resume';
 import { PendingResumeOneType, UpdateResumeData } from '../../types/resume';
 import Select from '../../components/resume/Select';
@@ -10,7 +10,6 @@ const fieldOptions = [
   { value: 'IOS', label: 'IOS' },
   { value: 'DEVOPS', label: 'DEVOPS' },
   { value: 'AI', label: 'AI' },
-  { value: 'ETC', label: 'ETC' },
 ];
 
 const levelOptions = [
@@ -27,7 +26,6 @@ const PendingResumeView: React.FC = () => {
   const [isModified, setIsModified] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [descriptionImage, setDescriptionImage] = useState<File | null>(null);
-  const navigate = useNavigate();
   // 컴포넌트 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -141,7 +139,6 @@ const PendingResumeView: React.FC = () => {
     if (descriptionImage) {
       imageToSend = descriptionImage;
     } else {
-      //imageToSend = resumeData?.description_image_url;
       imageToSend = undefined;
     }
 
@@ -157,13 +154,16 @@ const PendingResumeView: React.FC = () => {
       const response = await updateResume(Number(resumeId), updateData, imageToSend);
       if (response.result.result_code === 200) {
         alert(response.result.result_message);
-        navigate(`/resumes/pending/${resumeId}`);
+        setIsModified(false);
+        // 여기서 모든 수정 모드를 해제
+        setEditMode({}); // 모든 필드의 수정 모드를 false로 설정
+        setResumeData(tempData); // 현재 tempData를 resumeData로 설정
       }
     } catch (error) {
       console.error('Failed to update resume:', error);
       alert('수정 중 오류가 발생했습니다.');
     }
-  };
+};
 
   if (!resumeData || !tempData) return <p>Loading...</p>;
 

@@ -201,7 +201,6 @@ const List: React.FC = () => {
               <option value="IOS">IOS</option>
               <option value="DEVOPS">데브옵스</option>
               <option value="AI">AI</option>
-              <option value="ETC">기타</option>
             </select>
           </div>
   

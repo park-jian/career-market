@@ -104,7 +104,7 @@ export interface PendingResumeType {//요청중인 이력서 전체
   }
 
   export interface UpdateResumeData {
-    field: 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+    field: 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI';
     level: 'NEW' | 'JUNIOR' | 'SENIOR';
     resume_url: string;
     price: number;
@@ -121,7 +121,7 @@ export interface PendingResumeType {//요청중인 이력서 전체
   export type ResponsePendingResume = ApiResponse<PendingResumeType[]>;
 
   export type SortType = 'OLD' | 'NEW' | 'HIGHEST_PRICE' | 'LOWEST_PRICE' | 'BEST_SELLING';
-  export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+  export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI';
   export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
   // export interface GetMyListParams {
   //   sortType?: string;

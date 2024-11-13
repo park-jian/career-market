@@ -5,7 +5,7 @@ import { ResumeInfo, ListParams, AdminListParams, UpdateResumeData, ResponsePend
 import { VerifyCodeResponse, ApiResponseProp } from '../types/common';
 
 // export type SortType = 'OLD' | 'NEW' | 'HIGHEST_PRICE' | 'LOWEST_PRICE' | 'BEST_SELLING';
-// export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI' | 'ETC';
+// export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI';
 // export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
 // export type PageStep = 'FIRST' | 'NEXT' | 'PREVIOUS' | 'LAST';
 

@@ -13,7 +13,6 @@ const fieldOptions = [
   { value: 'IOS', label: 'IOS' },
   { value: 'DEVOPS', label: 'DEVOPS' },
   { value: 'AI', label: 'AI' },
-  { value: 'ETC', label: 'ETC' },
 ];
 
 const levelOptions = [
