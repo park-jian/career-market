@@ -13,12 +13,12 @@ import PasswordSearch from './pages/user/PasswordSearch'; //비밀번호 찾기
 import Secession from './pages/user/Secession'; //탈퇴
 
 //이력서
-import ResumeList from './pages/resume/List';  //이력서 조회
-import MySalesResumes from './pages/resume/MySalesResumes'; //자신이 판매중인 판매글 내역 조회
 import ResumeRegister from './pages/resume/Register';  //이력서 등록
+import ResumeList from './pages/resume/List';  //이력서 조회
 import PendingResumeList from './pages/resume/PendingResumeList'; //판매 요청중인 이력서 조회
 import PendingResumeView from './pages/resume/PendingResumeView'; //판매 요청중인 이력서 단건 조회
-import SalesResumeView from './pages/resume/SalesResumeView'; //판매글 단건 상세 조회
+// import SalesResumeView from './pages/resume/SalesResumeView'; //판매글 단건 상세 조회
+import MySalesResumes from './pages/resume/MySalesResumes'; //자신이 판매중인 판매글 내역 조회
 import OrderList from './pages/order/OrderList'; //주문내역 전체 조회
 import OrderView from './pages/order/OrderView'; //주문내역 상세조회
 
@@ -105,7 +105,7 @@ const App: React.FC = () => {
 
           
           <Route path="/resumes/list" element={<ResumeList />} />
-          <Route path="/resumes/:resumeId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} />
+          {/* <Route path="/resumes/:salesPostId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} /> */}
 
           <Route path="/resumes/pending" element={<PrivateRoute><PendingResumeList /></PrivateRoute>} />
           <Route path="/resumes/pending/:resumeId" element={<PrivateRoute><PendingResumeView /></PrivateRoute>} />
