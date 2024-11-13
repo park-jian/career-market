@@ -32,7 +32,7 @@ const Transaction = () => {
     console.log("토스 위젯 오픈");
     //결제 창 초기화
     //const tossPayments = await loadTossPayments("test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq");
-    const tossPayments = await loadTossPayments(`${import.meta.env.VITE_TOSS_PAYMENT_KEY}`);
+    const tossPayments = await loadTossPayments(`test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq`);
     const payment = tossPayments.payment({ customerKey: `${user.user_id}` });
 
     // 첫 번째 상품명 가져오기
@@ -44,7 +44,7 @@ const Transaction = () => {
       const orderId = Math.floor(Date.now() / 5000) + "_" + `${user.user_id}` + "-" + uuidv4().slice(0, 5);
       const requestData = {
         resume_ids: selectedProducts.map(product => product.cart_resume_id),
-        payment_key: import.meta.env.VITE_TOSS_PAYMENT_KEY,
+        payment_key: 'test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq',
         request_id: orderId,
         amount: totalPrice
       };
@@ -69,8 +69,8 @@ const Transaction = () => {
           useCardPoint: false,
           useAppCardOnly: false,
         },
-        successUrl: `${import.meta.env.VITE_PRODUCTION_URL}/success`,
-        failUrl: `${import.meta.env.VITE_PRODUCTION_URL}/fail`,
+        successUrl: `https://resume-market.netlify.app/success`,
+        failUrl: `https://resume-market.netlify.app/fail`,
         //successUrl: `${window.location.origin}/success`,
         //failUrl: `${window.location.origin}/fail`
       });
