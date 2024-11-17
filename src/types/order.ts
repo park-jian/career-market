@@ -28,6 +28,7 @@ export interface OrderCardInfo {
 }
 export interface CartResumeItem {
   cart_resume_id: number;
+  resume_id: number;
   title: string;
   price: number;
 }

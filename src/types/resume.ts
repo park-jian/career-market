@@ -10,6 +10,8 @@ export interface ResumeInfo {
     level: string;
     status: string;
     registered_at: string;
+    description_image_url?: string;
+    description?: string;
 }
 
 export interface ResumeInfoView {
@@ -90,16 +92,15 @@ export interface PendingResumeType {//요청중인 이력서 전체
   export interface ResumeState {
     resume: {
       resume_id: number;
-      title: string;
-      price: number;
-      thumbnail_image_url: string;
-      description_image_url: string;
-      description: string;
-      sales_quantity: number;
-      field: string;
-      level: string;
-      status: string;
-      registered_at: string;
+      title?: string;
+      price?: number;
+      thumbnail_image_url?: string;
+      description_image_url?: string;
+      description?: string;
+      sales_quantity?: number;
+      field?: string;
+      level?: string;
+      status?: string;
     }
   }
 

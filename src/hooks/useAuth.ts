@@ -39,27 +39,27 @@ export const useAuth = () => {
     }, []);
   
     // refresh 토큰으로 access 토큰 갱신 함수
-    const refreshTokens = useCallback(async () => {
+    const refreshAccessToken = useCallback(async () => {
       try {
         const refreshToken = tokenUtils.getRefreshToken();
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
-  
-        const response = await api.post('/api/v1/token/reissue', null, {
+        const response = await api.post('/open-api/v1/token/reissue', null, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
             'Refresh-Token': refreshToken
           }
         });
-  
-        const { access_token, refresh_token } = response.data.body;
-        tokenUtils.setTokens(access_token, refresh_token);
+        const access_token = response.data.body;
+        tokenUtils.setTokens(access_token);
+        tokenUtils.setLoginTime();
         api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
         return access_token;
       } catch (error) {
         console.error('Token refresh failed:', error);
+        tokenUtils.clearTokens();
         throw error;
       }
     }, []);
@@ -80,7 +80,7 @@ export const useAuth = () => {
           } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 401 && refreshToken) {
               // 액세스 토큰이 만료된 경우 리프레시 토큰으로 갱신
-              await refreshTokens();
+              await refreshAccessToken();
               const userData = await fetchUserInfo();
               queryClient.setQueryData(['user'], userData);
             } else {
@@ -89,7 +89,7 @@ export const useAuth = () => {
           }
         } else if (refreshToken) {
           // 액세스 토큰은 없지만 리프레시 토큰이 있는 경우
-          await refreshTokens();
+          await refreshAccessToken();
           const userData = await fetchUserInfo();
           queryClient.setQueryData(['user'], userData);
         }
@@ -105,7 +105,7 @@ export const useAuth = () => {
       } finally {
         setIsInitializing(false);
       }
-    }, [refreshTokens, fetchUserInfo, queryClient]);
+    }, [refreshAccessToken, fetchUserInfo, queryClient]);
   
     // API 인터셉터 설정
     useEffect(() => {
@@ -114,12 +114,24 @@ export const useAuth = () => {
         async error => {
           const originalRequest = error.config;
           if (!originalRequest) return Promise.reject(error);
-  
+          // refresh token 요청 URL에서 401이 발생하면 바로 로그아웃 처리
+          if (originalRequest.url?.includes('/open-api/v1/token/reissue') && error.response?.status === 401) {//debugger;
+            //토큰 재발급 url이 401이면 무한 토큰 재발급 api 호출을 하는 문제 때문에 넣은 코드
+            tokenUtils.clearTokens();
+            delete api.defaults.headers.common['Authorization'];
+            queryClient.setQueryData(['user'], null);
+            if (window.location.pathname !== '/') {
+              window.location.href = '/';
+            }
+            return Promise.reject(error);
+          }
           if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-              const newAccessToken = await refreshTokens();
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              const accessToken = await refreshAccessToken();
+              // 새 토큰을 axios 인스턴스의 기본 헤더에도 설정
+              api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
               return api(originalRequest);
             } catch (refreshError) {
               // 토큰 갱신 실패 시에만 로그아웃
@@ -139,8 +151,37 @@ export const useAuth = () => {
       return () => {
         api.interceptors.response.eject(interceptor);
       };
-    }, [refreshTokens, queryClient]);
-  
+    }, [refreshAccessToken, queryClient]);
+    // 토큰 만료시간 체크 및 갱신
+    useEffect(() => {
+      const checkTokenExpiration = async () => {
+        const accessToken = tokenUtils.getAccessToken();
+        if (!accessToken) return;
+
+        try {
+          // 로그인 후 50분 이상 지났는지 확인
+          const minutesFromLogin = tokenUtils.getMinutesFromLogin();
+          if (minutesFromLogin >= 50) { // 50분 이상 지났을 때만 체크
+
+            if (tokenUtils.isTokenExpiringSoon(accessToken) === true) {
+              console.log('login 경과시간', minutesFromLogin);
+              await refreshAccessToken();
+            }
+         }
+        } catch (error) {
+          console.error('Token expiration check failed:', error);
+        }
+      };
+
+      // 5분마다 체크 (50분 이후부터는 5분마다만 체크하면 됨)
+      const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
+
+      // 컴포넌트 마운트 시 최초 1회 체크
+      checkTokenExpiration();
+
+      // 클린업
+      return () => clearInterval(intervalId);
+    }, [refreshAccessToken]);
     return {
       initializeAuth,
       isInitializing
@@ -186,10 +227,11 @@ export const useLogin = () => {
         { withCredentials: true }
       );
       if (response.data.result.result_code === 200) {
+        console.log("login_time:",  new Date(Date.now()).toLocaleTimeString());
         const { access_token } = response.data.body;
         const refresh_token = response.headers['refresh-token'];
         tokenUtils.setTokens(access_token, refresh_token);
-        
+        tokenUtils.setLoginTime();
         const userResponse = await api.get('/api/v1/users/me');
         return userResponse.data.body;
       }

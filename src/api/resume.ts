@@ -3,7 +3,13 @@ import api from '../api/axiosConfig';
 import axios from 'axios';
 import { ResumeInfo, ListParams, AdminListParams, UpdateResumeData, ResponsePendingResumeOne, ResponsePendingResume } from '../types/resume';
 import { VerifyCodeResponse, ApiResponseProp } from '../types/common';
-
+interface ListOneProp {
+  body: ResumeInfo;
+  result: {
+    result_code: number;
+    result_message: string;
+  }
+}
 // export type SortType = 'OLD' | 'NEW' | 'HIGHEST_PRICE' | 'LOWEST_PRICE' | 'BEST_SELLING';
 // export type FieldCond = 'FRONTEND' | 'BACKEND' | 'ANDROID' | 'IOS' | 'DEVOPS' | 'AI';
 // export type LevelCond = 'NEW' | 'JUNIOR' | 'SENIOR';
@@ -25,9 +31,9 @@ export const getList = async (params?: ListParams) => {
   return response.data;
 };
 
-export const getListOne = async (salesPostId: number): Promise<ResumeInfo> => {//모든 사용자 판매글 단건 상세 조회
+export const getListOne = async (resumeId: number): Promise<ListOneProp> => {//모든 사용자 판매글 단건 상세 조회
   try {
-    const response = await api.get(`/open-api/v1/sale-posts/${salesPostId}`);
+    const response = await api.get(`/open-api/v1/sales-posts/${resumeId}`);
     return response.data;
   } catch (error) {
     console.error('Error adding new resume:', error);

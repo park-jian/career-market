@@ -10,7 +10,7 @@ import { ResumeInfo } from '../../types/resume';
   return (
     <li
       onClick={() => {
-        navigate(`/resumes/${resume_id}`, { state: { resume } });
+        navigate(`/resumes/${resume_id}`, { state: { resume_id } });
       }}
       className="rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:scale-105"
     >

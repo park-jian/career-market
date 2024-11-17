@@ -43,7 +43,7 @@ const Transaction = () => {
     try {
       const orderId = Math.floor(Date.now() / 5000) + "_" + `${user.user_id}` + "-" + uuidv4().slice(0, 5);
       const requestData = {
-        resume_ids: selectedProducts.map(product => product.cart_resume_id),
+        resume_ids: selectedProducts.map(product => product.resume_id),
         payment_key: 'test_ck_Z61JOxRQVEaJxAQ6K16RVW0X9bAq',
         request_id: orderId,
         amount: totalPrice

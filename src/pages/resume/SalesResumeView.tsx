@@ -1,15 +1,51 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { addCart } from '../../api/order';
-import { ResumeState } from '../../types/resume';
-
+import { ResumeInfo } from '../../types/resume';
+import {getListOne} from '../../api/resume';
+import axios from 'axios';
 const SalesResumeListOne: React.FC = () => {
   const location = useLocation();
   const [alertVisible, setAlertVisible] = useState(false);
-  const resumeData = (location.state as ResumeState)?.resume;
-
+  const resume_id = (location.state)?.resume_id;
+  const [resumeData, setResumeData] = useState<ResumeInfo>();
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  useEffect(() => {
+    const fetchResumes = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getListOne(resume_id);
+        if (data?.result?.result_code === 200) {
+          setResumeData(data.body);
+        } else {
+          alert('데이터를 불러오는데 실패했습니다.');
+        }
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            alert('오류가 발생했습니다');
+        }
+      } finally {
+        setIsLoading(false); // 데이터 로딩 완료
+      }
+    };
+    fetchResumes();
+  }, []);
+  if (!resume_id || !resumeData) {
+    return (
+      <div className="p-6 text-center">
+        <p>이력서 정보를 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
+  if (isLoading) {
+    return (
+      <div className="p-6 text-center">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
   const handleCart = async () => {
-    const response = await addCart(resumeData.resume_id);
+    const response = await addCart(resume_id);
     if (response?.result_code === 201) {
       setAlertVisible(true)
     } else {
@@ -20,7 +56,7 @@ const SalesResumeListOne: React.FC = () => {
     setAlertVisible(false)
   }
   
-  if (!resumeData) {
+  if (!resume_id) {
     return (
       <div className="p-6 text-center">
         <p>이력서 정보를 찾을 수 없습니다.</p>
@@ -46,9 +82,9 @@ const SalesResumeListOne: React.FC = () => {
           
           <div className="space-y-4">
             {/* 상품 요약 정보 */}
-            <div className="text-gray-600">
+            {/* <div className="text-gray-600">
               {resumeData.registered_at ? `${new Date(resumeData.registered_at).getFullYear()}년 ${new Date(resumeData.registered_at).getMonth() + 1}월` : null}
-            </div>
+            </div> */}
 
             {/* 판매가 */}
             <div className="border-t border-b py-4">
