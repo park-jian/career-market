@@ -105,7 +105,7 @@ const App: React.FC = () => {
 
           
           <Route path="/resumes/list" element={<ResumeList />} />
-          <Route path="/resumes/:resumeId" element={<PrivateRoute><SalesResumeView /></PrivateRoute>} />
+          <Route path="/resumes/:resumeId" element={<SalesResumeView />} />
 
           <Route path="/resumes/pending" element={<PrivateRoute><PendingResumeList /></PrivateRoute>} />
           <Route path="/resumes/pending/:resumeId" element={<PrivateRoute><PendingResumeView /></PrivateRoute>} />
