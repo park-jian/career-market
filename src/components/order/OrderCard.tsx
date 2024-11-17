@@ -5,7 +5,6 @@ import { OrderCardInfo } from '../../types/order';
 
 const statusMapping: { [key: string]: string } = {
   ORDERED: "주문 생성",
-  PAYMENT_FAILED: "결제 실패",
   PAID: "결제 완료",
   WAIT: "발송 대기",
   PARTIAL_WAIT: "발송 부분 대기",
@@ -26,7 +25,6 @@ const OrderCard: React.FC<OrderCardInfo> = ({ order }) => {
   const getStatusColor = (status: string): string => {
     const colorMapping: { [key: string]: string } = {
       ORDERED: "text-blue-600 bg-blue-50",
-      PAYMENT_FAILED: "text-red-600 bg-red-50",
       PAID: "text-green-600 bg-green-50",
       WAIT: "text-yellow-600 bg-yellow-50",
       PARTIAL_WAIT: "text-yellow-600 bg-yellow-50",

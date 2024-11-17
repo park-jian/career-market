@@ -7,12 +7,6 @@
             "total_amount": 165000
           },
           {
-            "order_id": 4,
-            "order_title": "SENIOR FRONTEND 이력서 #6",
-            "status": "PAYMENT_FAILED",
-            "total_amount": 5000
-          },
-          {
             "order_id": 5,
             "order_title": "NEW BACKEND 이력서 #4",
             "status": "PARTIAL_CANCEL",
