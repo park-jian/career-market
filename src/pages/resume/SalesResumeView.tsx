@@ -130,6 +130,7 @@ const SalesResumeListOne: React.FC = () => {
               <Link to="/transaction"
               state={{ 
                 selectedProducts: [{
+                  resume_id: resumeData.resume_id,
                   cart_resume_id: resumeData.resume_id,
                   price: resumeData.price,
                   title: resumeData.title

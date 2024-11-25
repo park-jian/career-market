@@ -74,6 +74,7 @@ const Transaction = () => {
         //successUrl: `${window.location.origin}/success`,
         //failUrl: `${window.location.origin}/fail`
       });
+      console.log("origin:", window.location.origin);
     } catch (error) {
       console.error(error);
     }
