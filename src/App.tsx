@@ -32,6 +32,7 @@ import Cart from './pages/order/Cart'; //장바구니
 import Transaction from './pages/order/Transaction';
 import PaymentSuccess from './pages/order/PaymentSuccess';
 import PaymentFail from './pages/order/PaymentFail';
+import OrderCancelView from './pages/order/OrderCancelView';
 
 import Header from './components/Header'
 
@@ -113,6 +114,7 @@ const App: React.FC = () => {
           <Route path="/resumes/sale-resumes/" element={<PrivateRoute><MySalesResumes /></PrivateRoute>} />
           <Route path="/orders" element={<PrivateRoute><OrderList /></PrivateRoute>} />
           <Route path="/orders/:orderId" element={<PrivateRoute><OrderView /></PrivateRoute>} />
+          <Route path="/orders/:orderId/cancel" element={<PrivateRoute><OrderCancelView /></PrivateRoute>} />
           {/* <Route path="/resumes/admin" element={<PrivateRoute><AdminResumeList /></PrivateRoute>} />
           <Route path="/resumes/admin/:resumeId" element={<PrivateRoute><AdminResumeView /></PrivateRoute>} /> */}
 
