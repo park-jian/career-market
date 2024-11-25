@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import api, { setAuthToken } from '../api/axiosConfig';
+import api from '../api/axiosConfig';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import {tokenUtils} from '../utils/tokenUtils';
@@ -90,7 +90,6 @@ export const useSignup = () => {
       },
       onSuccess: () => {
         tokenUtils.clearTokens();
-        setAuthToken(null);
         // 모든 쿼리 초기화
         // 특정 쿼리들을 명시적으로 무효화
         queryClient.invalidateQueries({
@@ -236,7 +235,6 @@ export const useUser = () => {
       },
       onSuccess: () => {
         tokenUtils.clearTokens();
-        setAuthToken(null);
         // 모든 쿼리 초기화
         queryClient.clear();
         navigate('/');
