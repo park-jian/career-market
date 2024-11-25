@@ -69,10 +69,10 @@ const Transaction = () => {
           useCardPoint: false,
           useAppCardOnly: false,
         },
-        successUrl: `https://resume-market.netlify.app/success`,
-        failUrl: `https://resume-market.netlify.app/fail`,
-        //successUrl: `${window.location.origin}/success`,
-        //failUrl: `${window.location.origin}/fail`
+        //successUrl: `https://resume-market.netlify.app/success`,
+        //failUrl: `https://resume-market.netlify.app/fail`,
+        successUrl: `${window.location.origin}/success`,
+        failUrl: `${window.location.origin}/fail`
       });
       console.log("origin:", window.location.origin);
     } catch (error) {
