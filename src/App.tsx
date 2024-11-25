@@ -37,6 +37,7 @@ import OrderCancelView from './pages/order/OrderCancelView';
 import Header from './components/Header'
 
 import RegisterSuccess from './pages/user/RegisterSuccess';
+import AdminInquiry from './pages/admin/AdminInquiry';
 // import Footer from './components/Footer'
 // PrivateRoute 컴포넌트 정의
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -93,6 +94,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/resumes/admin" element={<AdminRoute><AdminResumeList /></AdminRoute>} />
         <Route path="/resumes/admin/:resumeId" element={<AdminRoute><AdminResumeView /></AdminRoute>} />
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/" element={<Home />} />
@@ -100,6 +102,7 @@ const App: React.FC = () => {
           <Route path="/users/login" element={<UserLogin />} />
           <Route path="/users/password/new" element={<PasswordSearch />} />
           <Route path="/users/join_success" element={<PrivateRoute><RegisterSuccess /></PrivateRoute>} />
+          <Route path="/users/inquiry" element={<PrivateRoute><AdminInquiry /></PrivateRoute>} />
 
           <Route path="/users/me" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
           <Route path="/users/secession" element={<PrivateRoute><Secession /></PrivateRoute>} />

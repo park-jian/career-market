@@ -1,12 +1,14 @@
 import { useEffect, useState }  from 'react';
 import { useSearchParams, useNavigate  } from 'react-router-dom';
 import { paymentConfirm } from '../../api/order';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient(); 
   useEffect(() => {
     const confirmPayment = async () => {
     const paymentKey = searchParams.get('paymentKey');
@@ -35,7 +37,8 @@ export default function PaymentSuccess() {
         });
         setLoading(false);
         if (result.result_code === 200) {  // 성공 코드는 서버 응답에 따라 수정
-          // 잠시 성공 메시지를 보여준 후 이동
+          // 결제 성공 시 장바구니 데이터 갱신
+          queryClient.invalidateQueries({ queryKey: ['cart'] });
           setTimeout(() => {
             navigate('/orders');
           }, 3000);
@@ -51,7 +54,7 @@ export default function PaymentSuccess() {
 
   confirmPayment();
     
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, queryClient]);
 
   if (loading) {
     return (

@@ -11,7 +11,9 @@ const CartIcon: React.FC<{ isHovered: boolean }> = ({ isHovered }) => {
     queryKey: ['cart'],
     queryFn: getCartList,
     enabled: !!user, // user가 있을 때만 실행
-    staleTime: 1000 * 60, // 1분간 캐시 유지
+    staleTime: 0, // 캐시를 즉시 만료시켜 새로운 데이터를 가져오도록 함
+    refetchOnMount: true, // 컴포넌트가 마운트될 때마다 새로운 데이터를 가져옴
+    refetchOnWindowFocus: true, // 윈도우가 포커스될 때마다 새로운 데이터를 가져옴
   });
   const cartItemCount = cartData?.body?.total_quantity || 0;
 

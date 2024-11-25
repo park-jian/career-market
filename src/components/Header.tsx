@@ -47,7 +47,7 @@ const Header: React.FC = () => {
       case 'customerCenter':
         return (
           <div className="flex justify-center space-x-8">
-            <Link to="/resumes/admin" className="hover:underline hover:text-red-500">이력서 요청</Link>
+            <Link to="/users/inquiry" className="hover:underline hover:text-red-500">문의 하기</Link>
           </div>
         );
       default:
@@ -73,14 +73,17 @@ const Header: React.FC = () => {
         }}>
           <div className={`flex flex-row items-center justify-between`}>
           <div className="hidden sm:block sm:w-1/3"></div>
-          <ul className="flex items-center justify-center font-bold text-sm relative z-10 py-2 w-full sm:w-1/3">
+          <ul className="flex items-center justify-center font-bold text-sm relative z-10 py-2 w-full">
             <li className="relative px-2 sm:px-8" id="resume" onMouseEnter={() => handleMouseOver("resume")}>
                 <strong className="hover:underline hover:text-red-500">이력서</strong>
             </li>
             <li className="relative px-2 sm:px-8 ml-8 sm:ml-16" id="order" onMouseEnter={() => handleMouseOver("order")}>
                 <strong className="hover:underline hover:text-red-500">주문</strong>
             </li>
-        </ul>
+            <li className="relative px-2 sm:px-8 ml-8 sm:ml-16" id="order" onMouseEnter={() => handleMouseOver("customerCenter")}>
+                <strong className="hover:underline hover:text-red-500">고객 센터</strong>
+            </li>
+          </ul>
             <div className="flex justify-end items-center h-full p-3 sm:p-3 w-auto sm:w-1/3">
               <Link to="/" className={linkClass}>
                 <IoIosHome size="24" color={isHovered ? 'black' : 'white'}/>

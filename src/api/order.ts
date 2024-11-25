@@ -23,7 +23,18 @@ export const getOrderList = async () => {
       throw error;
     }
   };
-
+  export const confirmImmediately = async (orderId: number, resumeId: number): Promise<ApiResponse<OrderOneInfo>> => {
+    try {
+      const response = await api.post(`/api/v1/orders/confirm/${orderId}`, {
+        order_resume_ids: [resumeId]
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error adding new order:', error);
+      throw error;
+    }
+  };
+  
 export const addNewOrder = async (order: Omit<OrderInfo, 'id'>): Promise<OrderInfo> => {
     try {
       const response = await api.post(`/api/v1/add`, order, {

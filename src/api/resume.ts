@@ -1,7 +1,7 @@
 //import axios from 'axios';
 import api from '../api/axiosConfig';
 import axios from 'axios';
-import { ResumeInfo, ListParams, AdminListParams, UpdateResumeData, ResponsePendingResumeOne, ResponsePendingResume } from '../types/resume';
+import { ResumeInfo, ListParams, AdminListParams, UpdateResumeData, ResponsePendingResumeOne, ResponsePendingResume, inquiryDataType } from '../types/resume';
 import { VerifyCodeResponse, ApiResponseProp } from '../types/common';
 interface ListOneProp {
   body: ResumeInfo;
@@ -188,6 +188,25 @@ export const setAdminDeny = async (resumeId: number) => {//관리자 요청 이�
     throw error;
   }
 };
+export const setAdminInquiry = async (inquiryData: inquiryDataType) => {//관리자 문의하기
+  try {
+    const response = await api.post(`/api/v1/users/inquiry`, inquiryData);
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      const result = error.response.data.result;
+      return {
+        result_code: result.result_code,
+        result_message: result.result_message
+      };
+    }
+    return {
+      result_code: 500,
+      result_message: '문의하기 중 오류가 발생했습니다.'
+    };
+  }
+};
+
 //이력서 등록
 export const ResumeRegister = async (formData: FormData): Promise<VerifyCodeResponse> => {
   try {

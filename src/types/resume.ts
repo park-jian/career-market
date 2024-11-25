@@ -13,7 +13,11 @@ export interface ResumeInfo {
     description_image_url?: string;
     description?: string;
 }
-
+export interface inquiryDataType {
+  inquiry_type: string,
+  title: string,
+  content: string
+}
 export interface ResumeInfoView {
   resume_id: number;
   title: string;

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getOrderListView } from '../../api/order';
+import { getOrderListView, confirmImmediately } from '../../api/order';
 import { OrderOneInfo } from '../../types/order';
 import { convertToKST } from '../../utils/dateUtils';
 const OrderView: React.FC = () => {
@@ -10,10 +10,7 @@ const OrderView: React.FC = () => {
   const [selectedResumes, setSelectedResumes] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    fetchOrder();
-  }, [orderId]);
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     if (orderId) {
       try {
         const _orderId = Number(orderId);
@@ -32,7 +29,10 @@ const OrderView: React.FC = () => {
         console.log('Failed to fetch order.');
       }
     }
-  };
+  }, [orderId]);
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
 
   const handleCheckboxChange = (resumeId: number) => {
     setSelectedResumes(prev => {
@@ -77,6 +77,24 @@ const OrderView: React.FC = () => {
       state: { selectedResumeIds: selectedResumes }
     });
   };
+  const handleConfirmImmediately = async (orderId: number, resumeId: number) => {
+    try {
+      const response = await confirmImmediately(orderId, resumeId);
+      if (response.result.result_code === 200) {
+        alert('구매가 확정되었습니다.');
+        fetchOrder(); // 주문 정보 새로고침
+      }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.result) {
+          alert(err.response?.data?.result.result_description);
+        }
+      } else {
+        console.error('Unexpected error:', err);
+      }
+      fetchOrder();
+    }
+  }
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-xl space-y-6">
@@ -157,6 +175,14 @@ const OrderView: React.FC = () => {
                           resume.status === 'CANCEL' ? '주문 취소' : 
                           resume.status === 'SENT' ? '전송완료' : ''}
                         </span>
+                        {resume.status === 'PAID' && (
+                          <button
+                            onClick={() => handleConfirmImmediately(Number(orderId), Number(resume.order_resume_id))}
+                            className="mx-6 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm"
+                          >
+                            즉시 구매확정
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="flex border-b">

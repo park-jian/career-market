@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { getOrderListView, cancelOrderResume } from '../../api/order';
 import { OrderOneInfo } from '../../types/order';
-
+import { AxiosError } from 'axios';
 const OrderCancelView: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const [orderData, setOrderData] = useState<OrderOneInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const selectedResumeIds = location.state?.selectedResumeIds || [];
-
-  useEffect(() => {
-    fetchOrder();
-  }, [orderId]);
-
-  const fetchOrder = async () => {
+  const selectedResumeIds = useMemo(() => 
+    location.state?.selectedResumeIds || [], 
+    [location.state?.selectedResumeIds]
+  );
+  const fetchOrder = useCallback(async () => {
     if (!orderId) return;
 
     try {
@@ -36,8 +34,11 @@ const OrderCancelView: React.FC = () => {
       alert('주문 정보를 불러오는데 실패했습니다.');
       navigate(-1);
     }
-  };
-
+  }, [orderId, selectedResumeIds, navigate]);
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
+  
   const handleCancel = async () => {
     if (!orderData || !orderId) return;
     const cancelableResumes = orderData.order_resume_responses.filter(
@@ -59,8 +60,15 @@ const OrderCancelView: React.FC = () => {
       await cancelOrderResume(Number(orderId), cancelableIds);
       alert('주문이 취소되었습니다.');
       navigate(`/orders/${orderId}`);
-    } catch (error) {
-      console.error('Cancel failed:', error);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.data?.result) {
+        const result = error.response.data.result;
+        if (result.result_code === 9405 && result.result_description) {
+          alert(result.result_description);
+          fetchOrder();
+          return;
+        }
+      }
       alert('취소 처리 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -109,11 +117,8 @@ const OrderCancelView: React.FC = () => {
               <div>
                 <span className="mr-2">{resume.title}</span>
                 <span className={`text-sm px-2 py-1 rounded ${
-                  resume.status === 'PAID' 
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {resume.status === 'PAID' ? '취소 가능' : '취소 불가'}
+                  resume.status === 'PAID' ? 'bg-green-100 text-green-800' : ''}`}>
+                  {resume.status === 'PAID' ? '결제 완료' : ''}
                 </span>
               </div>
               <span className="font-medium">{resume.price.toLocaleString()}원</span>

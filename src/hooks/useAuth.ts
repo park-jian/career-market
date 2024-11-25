@@ -52,6 +52,7 @@ export const useAuth = () => {
             'Refresh-Token': refreshToken
           }
         });
+        console.log("토큰 만료 재발급 성공")
         const access_token = response.data.body;
         tokenUtils.setTokens(access_token);
         tokenUtils.setLoginTime();
@@ -70,7 +71,7 @@ export const useAuth = () => {
         setIsInitializing(true);
         const accessToken = tokenUtils.getAccessToken();
         const refreshToken = tokenUtils.getRefreshToken();
-  
+        console.log("인증 초기화")
         if (accessToken) {
           // 액세스 토큰이 있는 경우
           try {
@@ -128,6 +129,7 @@ export const useAuth = () => {
           if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
+              console.log("401 토큰 재발급")
               const accessToken = await refreshAccessToken();
               // 새 토큰을 axios 인스턴스의 기본 헤더에도 설정
               api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
@@ -164,7 +166,7 @@ export const useAuth = () => {
           if (minutesFromLogin >= 50) { // 50분 이상 지났을 때만 체크
 
             if (tokenUtils.isTokenExpiringSoon(accessToken) === true) {
-              console.log('login 경과시간', minutesFromLogin);
+              console.log('login 경과시간, 토큰 재발급', minutesFromLogin);
               await refreshAccessToken();
             }
          }
@@ -172,8 +174,6 @@ export const useAuth = () => {
           console.error('Token expiration check failed:', error);
         }
       };
-
-      // 5분마다 체크 (50분 이후부터는 5분마다만 체크하면 됨)
       const intervalId = setInterval(checkTokenExpiration, 60 * 1000);
 
       // 컴포넌트 마운트 시 최초 1회 체크

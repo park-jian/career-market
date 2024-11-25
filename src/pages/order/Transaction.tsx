@@ -19,14 +19,16 @@ const Transaction = () => {
   // 로그인이 필요한 기능이라면
   useEffect(() => {
     if (!user) {
-      // 로그인 페이지로 리다이렉트
       navigate('/users/login');
     }
-  }, [user]);
+    if (!selectedProducts?.length) {
+      navigate('/');
+      return;
+    }
+  }, [user, navigate, selectedProducts]);
 
-  // 또는 조건부 렌더링
-  if (!user) {
-    return <div>로그인이 필요한 서비스입니다</div>;
+  if (!user || !selectedProducts?.length) {
+    return null;
   }
   const handleTransaction = async () => {
     console.log("토스 위젯 오픈");
@@ -69,10 +71,10 @@ const Transaction = () => {
           useCardPoint: false,
           useAppCardOnly: false,
         },
-        //successUrl: `https://resume-market.netlify.app/success`,
-        //failUrl: `https://resume-market.netlify.app/fail`,
-        successUrl: `${window.location.origin}/success`,
-        failUrl: `${window.location.origin}/fail`
+        successUrl: `https://resume-market.netlify.app/success`,
+        failUrl: `https://resume-market.netlify.app/fail`,
+        //successUrl: `${window.location.origin}/success`,
+        //failUrl: `${window.location.origin}/fail`
       });
       console.log("origin:", window.location.origin);
     } catch (error) {
