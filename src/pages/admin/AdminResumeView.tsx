@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, {useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import {setAdminApprove, setAdminDeny} from '../../api/resume';
 import { useParams } from 'react-router-dom';
@@ -9,38 +9,36 @@ const AdminResumeView: React.FC = () => {
   const { resumeId } = useParams<{ resumeId: string }>();
   const [resumeData, setResumeData] = useState<ResumeRequestOneInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchResumes = async () => {
-      if (!resumeId) return;
-      const resumeIdNumber = parseInt(resumeId);
-      if (isNaN(resumeIdNumber)) {
-        console.error('Invalid resume ID');
-        setLoading(false);
-        return;
+  const fetchResumes = useCallback(async () => {
+    if (!resumeId) return;
+    const resumeIdNumber = parseInt(resumeId);
+    if (isNaN(resumeIdNumber)) {
+      console.error('Invalid resume ID');
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const data = await getAdminResumeListOne(resumeIdNumber);
+      if (data.result.result_code === 200) {
+        setResumeData(data.body);
       }
-      try {
-        setLoading(true);
-        const data = await getAdminResumeListOne(resumeIdNumber);
-        if (data.result.result_code === 200) {
-          setResumeData(data.body);
-        }
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          // Axios 에러인 경우
-          console.error('Error message:', err.message);
-          console.error('Error response:', err.response?.data);
-        } else {
-          // 일반 에러인 경우
-          console.error('Unexpected error:', err);
-        }
-        console.log('Failed to fetch resumes.');
-      } finally {
-        setLoading(false);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.error('Error message:', err.message);
+        console.error('Error response:', err.response?.data);
+      } else {
+        console.error('Unexpected error:', err);
       }
-    };
+      console.log('Failed to fetch resumes.');
+    } finally {
+      setLoading(false);
+    }
+  }, [resumeId]); // resumeId를 의존성으로 추가
 
+  useEffect(() => {
     fetchResumes();
-  }, [resumeId]);
+  }, [fetchResumes]);
   const handleApprove = async () => {
     if (!resumeId) return;
     
@@ -49,7 +47,7 @@ const AdminResumeView: React.FC = () => {
     try {
       const data = await setAdminApprove(resumeIdNumber);
       if (data.result.result_code === 200) {
-        //성공
+        await fetchResumes();
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -71,7 +69,7 @@ const AdminResumeView: React.FC = () => {
     try {
       const data = await setAdminDeny(resumeIdNumber);
       if (data.result.result_code === 200) {
-        //api 성공로직
+        await fetchResumes();
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
